@@ -1,0 +1,179 @@
+{
+  "project_id": "PqcaRKCiWKiVB",
+  "exported_at": "2026-09-11",
+  "processors": {
+    "sync_customers": {
+      "id": "proc_tLb4Vvc4IN",
+      "module": "sync_customers",
+      "transformations": [
+        {
+          "id": "trans_3PqBQeD6qO",
+          "name": "Extract source rows with overlap",
+          "sql": "SELECT CAST(s.customer_id AS TEXT) AS customer_id, CAST(s.full_name AS TEXT) AS full_name, CAST(s.email AS TEXT) AS email, CAST(s.phone AS TEXT) AS phone, CAST(s.address AS TEXT) AS address, CAST(s.country_code AS TEXT) AS country_code, CAST(s.marketing_consent AS TEXT) AS marketing_consent, CAST(s.created_at AS TEXT) AS created_at, CAST(s.updated_at AS TEXT) AS updated_at, CAST(s.is_deleted AS TEXT) AS is_deleted, :source_file AS source_file, :batch_id AS batch_id, CAST(CURRENT_TIMESTAMP AS TEXT) AS extracted_at FROM customers s WHERE (:full_snapshot = TRUE OR s.updated_at >= CAST(:window_start AS TIMESTAMP) - INTERVAL '5 minutes') AND s.updated_at < CAST(:window_end AS TIMESTAMP)"
+        },
+        {
+          "id": "trans_wyHKvQRiyj",
+          "name": "Load landing_customers",
+          "sql": "INSERT INTO landing_customers (customer_id, full_name, email, phone, address, country_code, marketing_consent, created_at, updated_at, is_deleted, source_file, batch_id, extracted_at) SELECT p.customer_id, p.full_name, p.email, p.phone, p.address, p.country_code, p.marketing_consent, p.created_at, p.updated_at, p.is_deleted, p.source_file, p.batch_id, p.extracted_at FROM sync_customers p"
+        }
+      ]
+    },
+    "bronze_ingest": {
+      "id": "proc_fM15NUfRm4",
+      "module": "ingest_landing_to_bronze",
+      "transformations": [
+        {
+          "id": "trans_X6gkq0prQe",
+          "name": "Ingest raw_customers",
+          "sql": "INSERT INTO raw_customers (customer_id, full_name, email, phone, address, country_code, marketing_consent, created_at, updated_at, is_deleted, source_file, batch_id, ingested_at) SELECT s.customer_id AS customer_id, s.full_name AS full_name, s.email AS email, s.phone AS phone, s.address AS address, s.country_code AS country_code, s.marketing_consent AS marketing_consent, s.created_at AS created_at, s.updated_at AS updated_at, s.is_deleted AS is_deleted, s.source_file AS source_file, s.batch_id AS batch_id, CURRENT_TIMESTAMP AS ingested_at FROM landing_customers s WHERE s.batch_id = :batch_id"
+        },
+        {
+          "id": "trans_pl0pC5M0n1",
+          "name": "Ingest raw_orders",
+          "sql": "INSERT INTO raw_orders (order_id, customer_id, order_status, ordered_at, currency, updated_at, is_deleted, source_file, batch_id, ingested_at) SELECT s.order_id AS order_id, s.customer_id AS customer_id, s.order_status AS order_status, s.ordered_at AS ordered_at, s.currency AS currency, s.updated_at AS updated_at, s.is_deleted AS is_deleted, s.source_file AS source_file, s.batch_id AS batch_id, CURRENT_TIMESTAMP AS ingested_at FROM landing_orders s WHERE s.batch_id = :batch_id"
+        },
+        {
+          "id": "trans_d0dofUVP1g",
+          "name": "Ingest raw_order_items",
+          "sql": "INSERT INTO raw_order_items (order_item_id, order_id, product_id, quantity, unit_price, updated_at, is_deleted, source_file, batch_id, ingested_at) SELECT s.order_item_id AS order_item_id, s.order_id AS order_id, s.product_id AS product_id, s.quantity AS quantity, s.unit_price AS unit_price, s.updated_at AS updated_at, s.is_deleted AS is_deleted, s.source_file AS source_file, s.batch_id AS batch_id, CURRENT_TIMESTAMP AS ingested_at FROM landing_order_items s WHERE s.batch_id = :batch_id"
+        },
+        {
+          "id": "trans_E70OKjT860",
+          "name": "Ingest raw_products",
+          "sql": "INSERT INTO raw_products (product_id, product_code, product_name, category, list_price, currency, updated_at, is_deleted, source_file, batch_id, ingested_at) SELECT s.product_id AS product_id, s.product_code AS product_code, s.product_name AS product_name, s.category AS category, s.list_price AS list_price, s.currency AS currency, s.updated_at AS updated_at, s.is_deleted AS is_deleted, s.source_file AS source_file, s.batch_id AS batch_id, CURRENT_TIMESTAMP AS ingested_at FROM landing_products s WHERE s.batch_id = :batch_id"
+        },
+        {
+          "id": "trans_lbjWqWnFKG",
+          "name": "Ingest raw_partner_products",
+          "sql": "INSERT INTO raw_partner_products (partner_id, product_code, brand, supplier_region, effective_date, file_checksum, source_file, batch_id, ingested_at) SELECT s.partner_id AS partner_id, s.product_code AS product_code, s.brand AS brand, s.supplier_region AS supplier_region, s.effective_date AS effective_date, s.file_checksum AS file_checksum, s.source_file AS source_file, s.batch_id AS batch_id, CURRENT_TIMESTAMP AS ingested_at FROM landing_partner_products s WHERE s.batch_id = :batch_id"
+        }
+      ]
+    },
+    "normalize_customers": {
+      "id": "proc_iV9fZ5QRIe",
+      "module": "normalize_customers",
+      "transformations": [
+        {
+          "id": "trans_eKFm87Ic7a",
+          "name": "Extract and rank source versions",
+          "sql": "SELECT r.customer_id AS src_customer_id, r.full_name AS src_full_name, r.email AS src_email, r.phone AS src_phone, r.address AS src_address, r.country_code AS src_country_code, r.marketing_consent AS src_marketing_consent, r.created_at AS src_created_at, r.updated_at AS src_updated_at, r.is_deleted AS src_is_deleted, r.source_file AS src_source_file, r.batch_id AS src_batch_id, r.ingested_at AS src_ingested_at, ROW_NUMBER() OVER (PARTITION BY r.customer_id ORDER BY TRY_CAST(r.updated_at AS TIMESTAMP) DESC, r.ingested_at DESC, r.batch_id DESC) AS src_row_rank FROM raw_customers r"
+        },
+        {
+          "id": "trans_wuPLdxsNs2",
+          "name": "Validate and normalize customer fields",
+          "sql": "SELECT TRY_CAST(p.src_customer_id AS BIGINT) AS customer_id, TRIM(p.src_full_name) AS full_name, LOWER(TRIM(p.src_email)) AS email_norm, REGEXP_REPLACE(p.src_phone, '[^0-9]', '') AS phone_norm, TRIM(p.src_address) AS address, UPPER(TRIM(p.src_country_code)) AS country_code, COALESCE(TRY_CAST(p.src_marketing_consent AS BOOLEAN), FALSE) AS marketing_consent, TRY_CAST(p.src_created_at AS TIMESTAMP) AS created_at, TRY_CAST(p.src_updated_at AS TIMESTAMP) AS updated_at FROM normalize_customers p WHERE p.src_row_rank = 1 AND TRY_CAST(p.src_is_deleted AS BOOLEAN) = FALSE AND TRY_CAST(p.src_customer_id AS BIGINT) IS NOT NULL AND TRY_CAST(p.src_updated_at AS TIMESTAMP) IS NOT NULL AND TRY_CAST(p.src_created_at AS TIMESTAMP) IS NOT NULL AND p.src_email LIKE '%@%'"
+        },
+        {
+          "id": "trans_6M4MiQP4rM",
+          "name": "Load normalized_customers",
+          "sql": "INSERT INTO normalized_customers (customer_id, full_name, email_norm, phone_norm, address, country_code, marketing_consent, created_at, updated_at) SELECT p.customer_id, p.full_name, p.email_norm, p.phone_norm, p.address, p.country_code, p.marketing_consent, p.created_at, p.updated_at FROM normalize_customers p"
+        }
+      ]
+    },
+    "mask_customers": {
+      "id": "proc_VOPDc38HLm",
+      "module": "pseudonymize_customers",
+      "transformations": [
+        {
+          "id": "trans_wTY5C4RymN",
+          "name": "Derive protected identity and email digest",
+          "sql": "SELECT c.customer_id AS customer_id, SHA2(CONCAT(:identity_pepper, ':', CAST(c.customer_id AS STRING)), 256) AS customer_key, SHA2(CONCAT(:email_pepper, ':', c.email_norm), 256) AS email_hash, c.country_code AS country_code, c.marketing_consent AS marketing_consent, c.created_at AS created_at, c.updated_at AS updated_at FROM normalized_customers c"
+        },
+        {
+          "id": "trans_alXyaqILfV",
+          "name": "Persist restricted identity mapping",
+          "sql": "INSERT INTO customer_identity_map (customer_id, customer_key, key_version, updated_at) SELECT p.customer_id, p.customer_key, :key_version, p.updated_at FROM pseudonymize_customers p"
+        },
+        {
+          "id": "trans_aE1c7OhFRv",
+          "name": "Load silver_customers",
+          "sql": "INSERT INTO silver_customers (customer_key, email_hash, country_code, marketing_consent, created_at, updated_at) SELECT p.customer_key, p.email_hash, p.country_code, p.marketing_consent, p.created_at, p.updated_at FROM pseudonymize_customers p"
+        }
+      ]
+    },
+    "quarantine": {
+      "id": "proc_xPJZ3R43Lt",
+      "module": "quarantine_invalid_records",
+      "transformations": [
+        {
+          "id": "trans_KDof0Mi1xa",
+          "name": "Quarantine customers",
+          "sql": "INSERT INTO quality_quarantine (reject_id, source_table, source_record_id, batch_id, reason_code, source_file, detected_at) SELECT SHA2(CONCAT(COALESCE(r.customer_id, 'null'), ':', r.batch_id, ':', r.source_file), 256), 'raw_customers', r.customer_id, r.batch_id, 'INVALID_CUSTOMER', r.source_file, CURRENT_TIMESTAMP FROM raw_customers r WHERE TRY_CAST(r.customer_id AS BIGINT) IS NULL OR TRY_CAST(r.updated_at AS TIMESTAMP) IS NULL OR TRY_CAST(r.is_deleted AS BOOLEAN) IS NULL OR (TRY_CAST(r.is_deleted AS BOOLEAN) = FALSE AND (r.email IS NULL OR r.email NOT LIKE '%@%' OR TRY_CAST(r.created_at AS TIMESTAMP) IS NULL))"
+        },
+        {
+          "id": "trans_U5jZDc6tS3",
+          "name": "Quarantine orders",
+          "sql": "INSERT INTO quality_quarantine (reject_id, source_table, source_record_id, batch_id, reason_code, source_file, detected_at) SELECT SHA2(CONCAT(COALESCE(r.order_id, 'null'), ':', r.batch_id, ':', r.source_file), 256), 'raw_orders', r.order_id, r.batch_id, 'INVALID_ORDER', r.source_file, CURRENT_TIMESTAMP FROM raw_orders r WHERE TRY_CAST(r.order_id AS BIGINT) IS NULL OR TRY_CAST(r.ordered_at AS TIMESTAMP) IS NULL OR TRY_CAST(r.updated_at AS TIMESTAMP) IS NULL OR TRY_CAST(r.is_deleted AS BOOLEAN) IS NULL OR r.order_status IS NULL OR LOWER(TRIM(r.order_status)) NOT IN ('created','paid','completed','cancelled') OR r.currency IS NULL OR LENGTH(TRIM(r.currency)) <> 3"
+        },
+        {
+          "id": "trans_zxm658XqwW",
+          "name": "Quarantine order_items",
+          "sql": "INSERT INTO quality_quarantine (reject_id, source_table, source_record_id, batch_id, reason_code, source_file, detected_at) SELECT SHA2(CONCAT(COALESCE(r.order_item_id, 'null'), ':', r.batch_id, ':', r.source_file), 256), 'raw_order_items', r.order_item_id, r.batch_id, 'INVALID_ORDER_ITEM', r.source_file, CURRENT_TIMESTAMP FROM raw_order_items r WHERE TRY_CAST(r.order_item_id AS BIGINT) IS NULL OR TRY_CAST(r.quantity AS INT) IS NULL OR TRY_CAST(r.quantity AS INT) <= 0 OR TRY_CAST(r.unit_price AS DECIMAL(18,2)) IS NULL OR TRY_CAST(r.unit_price AS DECIMAL(18,2)) < 0 OR TRY_CAST(r.updated_at AS TIMESTAMP) IS NULL"
+        },
+        {
+          "id": "trans_klFFgZFQni",
+          "name": "Quarantine products",
+          "sql": "INSERT INTO quality_quarantine (reject_id, source_table, source_record_id, batch_id, reason_code, source_file, detected_at) SELECT SHA2(CONCAT(COALESCE(r.product_id, 'null'), ':', r.batch_id, ':', r.source_file), 256), 'raw_products', r.product_id, r.batch_id, 'INVALID_PRODUCT', r.source_file, CURRENT_TIMESTAMP FROM raw_products r WHERE TRY_CAST(r.product_id AS BIGINT) IS NULL OR r.product_code IS NULL OR LENGTH(TRIM(r.product_code)) = 0 OR TRY_CAST(r.list_price AS DECIMAL(18,2)) IS NULL OR TRY_CAST(r.list_price AS DECIMAL(18,2)) < 0"
+        },
+        {
+          "id": "trans_N8X2zWAikZ",
+          "name": "Quarantine unresolved order customers",
+          "sql": "INSERT INTO quality_quarantine (reject_id, source_table, source_record_id, batch_id, reason_code, source_file, detected_at) SELECT SHA2(CONCAT(r.order_id, ':', r.batch_id, ':missing_customer'), 256), 'raw_orders', r.order_id, r.batch_id, 'UNRESOLVED_CUSTOMER', r.source_file, CURRENT_TIMESTAMP FROM raw_orders r LEFT JOIN customer_identity_map m ON TRY_CAST(r.customer_id AS BIGINT) = m.customer_id WHERE m.customer_id IS NULL AND TRY_CAST(r.is_deleted AS BOOLEAN) = FALSE"
+        },
+        {
+          "id": "trans_MAsF7rHx00",
+          "name": "Quarantine unresolved item parents",
+          "sql": "INSERT INTO quality_quarantine (reject_id, source_table, source_record_id, batch_id, reason_code, source_file, detected_at) SELECT SHA2(CONCAT(r.order_item_id, ':', r.batch_id, ':missing_parent'), 256), 'raw_order_items', r.order_item_id, r.batch_id, 'UNRESOLVED_ORDER_OR_PRODUCT', r.source_file, CURRENT_TIMESTAMP FROM raw_order_items r LEFT JOIN silver_orders o ON TRY_CAST(r.order_id AS BIGINT) = o.order_id LEFT JOIN silver_products p ON TRY_CAST(r.product_id AS BIGINT) = p.product_id WHERE (o.order_id IS NULL OR p.product_id IS NULL) AND TRY_CAST(r.is_deleted AS BOOLEAN) = FALSE"
+        },
+        {
+          "id": "trans_AhsMKt2qHQ",
+          "name": "Quarantine invalid or unresolved events",
+          "sql": "INSERT INTO quality_quarantine (reject_id, source_table, source_record_id, batch_id, reason_code, source_file, detected_at) SELECT SHA2(CONCAT(r.kafka_topic, ':', CAST(r.kafka_partition AS STRING), ':', CAST(r.kafka_offset AS STRING)), 256), 'raw_customer_events', r.event_id, CAST(r.kafka_offset AS STRING), 'INVALID_OR_UNRESOLVED_EVENT', r.kafka_topic, CURRENT_TIMESTAMP FROM raw_customer_events r LEFT JOIN customer_identity_map m ON TRY_CAST(r.customer_id AS BIGINT) = m.customer_id WHERE m.customer_id IS NULL OR TRY_CAST(r.event_time AS TIMESTAMP) IS NULL OR r.event_id IS NULL OR r.schema_version IS NULL OR r.schema_version <> '1' OR r.event_type IS NULL OR r.event_type NOT IN ('product_viewed','product_added_to_cart','order_created','order_cancelled')"
+        },
+        {
+          "id": "trans_G2ahfkaxJA",
+          "name": "Quarantine invalid partner products",
+          "sql": "INSERT INTO quality_quarantine (reject_id, source_table, source_record_id, batch_id, reason_code, source_file, detected_at) SELECT SHA2(CONCAT(COALESCE(r.product_code, 'null'), ':', r.batch_id, ':', r.source_file), 256), 'raw_partner_products', r.product_code, r.batch_id, 'INVALID_PARTNER_PRODUCT', r.source_file, CURRENT_TIMESTAMP FROM raw_partner_products r WHERE r.product_code IS NULL OR LENGTH(TRIM(r.product_code)) = 0 OR TRY_CAST(r.effective_date AS DATE) IS NULL OR r.file_checksum IS NULL"
+        }
+      ]
+    },
+    "audit": {
+      "id": "proc_BTuhhECFqG",
+      "module": "record_pipeline_run",
+      "transformations": [
+        {
+          "id": "trans_CrTUW4hD2w",
+          "name": "Persist observed run metrics",
+          "sql": "INSERT INTO pipeline_run_audit (run_id, job_name, started_at, completed_at, status, rows_read, rows_written, rows_rejected) SELECT :run_id, :job_name, :started_at, :completed_at, :status, :rows_read, :rows_written, :rows_rejected"
+        }
+      ]
+    },
+    "cursor_commit": {
+      "id": "proc_GQhF914SlZ",
+      "module": "commit_ingestion_cursor",
+      "transformations": [
+        {
+          "id": "trans_UTHuyu0tnm",
+          "name": "Persist committed source cursor",
+          "sql": "INSERT INTO ingestion_cursors (source_table, last_successful_watermark, last_batch_id, checkpoint_uri) SELECT :source_table, :last_successful_watermark, :last_batch_id, :checkpoint_uri"
+        }
+      ]
+    },
+    "customer_publication": {
+      "id": "proc_ayX5zANz9O",
+      "module": "commit_customer_publication",
+      "transformations": [
+        {
+          "id": "trans_EpELdMjgFu",
+          "name": "Load customer_pipeline_publications",
+          "sql": "INSERT INTO customer_pipeline_publications (batch_id, window_start, window_end, full_snapshot, baseline_batch_id, raw_version, normalized_version, identity_version, silver_version, rows_read, rows_written, rows_rejected, key_version, committed_at) SELECT p.batch_id, p.window_start, p.window_end, p.full_snapshot, p.baseline_batch_id, p.raw_version, p.normalized_version, p.identity_version, p.silver_version, p.rows_read, p.rows_written, p.rows_rejected, p.key_version, p.committed_at FROM commit_customer_publication p"
+        },
+        {
+          "id": "trans_8nErTQqh9Y",
+          "name": "Record predecessor epoch",
+          "sql": "INSERT INTO customer_pipeline_publications (previous_batch_id) SELECT p.previous_batch_id FROM commit_customer_publication p"
+        }
+      ]
+    }
+  }
+}

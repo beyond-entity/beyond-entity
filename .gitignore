@@ -1,0 +1,15 @@
+.DS_Store
+Thumbs.db
+.env
+.env.*
+!.env.example
+!.env.*.example
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+*.egg-info/
+node_modules/
+dist/
+.databricks/

@@ -1,0 +1,3970 @@
+{
+  "tables": {
+    "administrative_audit_events": [
+      {
+        "name": "admin_event_id",
+        "type": "uuid",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "organization_id",
+        "type": "uuid",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "actor_account_id",
+        "type": "uuid",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "store_id",
+        "type": "uuid",
+        "not_null": false,
+        "default": null
+      },
+      {
+        "name": "action_code",
+        "type": "text",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "resource_id",
+        "type": "uuid",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "occurred_at",
+        "type": "timestamp with time zone",
+        "not_null": true,
+        "default": null
+      }
+    ],
+    "operator_sessions": [
+      {
+        "name": "operator_session_id",
+        "type": "uuid",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "account_id",
+        "type": "uuid",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "token_hash",
+        "type": "text",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp with time zone",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "expires_at",
+        "type": "timestamp with time zone",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "revoked_at",
+        "type": "timestamp with time zone",
+        "not_null": false,
+        "default": null
+      }
+    ],
+    "delivery_receipts": [
+      {
+        "name": "store_id",
+        "type": "uuid",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "receipt_id",
+        "type": "uuid",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "job_id",
+        "type": "uuid",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "attempt_id",
+        "type": "uuid",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "source_kind",
+        "type": "text",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "source_event_digest",
+        "type": "text",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "receipt_status",
+        "type": "text",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "reported_at",
+        "type": "timestamp with time zone",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "received_at",
+        "type": "timestamp with time zone",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "applied",
+        "type": "boolean",
+        "not_null": true,
+        "default": null
+      }
+    ],
+    "delivery_attempts": [
+      {
+        "name": "store_id",
+        "type": "uuid",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "attempt_id",
+        "type": "uuid",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "job_id",
+        "type": "uuid",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "attempt_number",
+        "type": "integer",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "lease_token",
+        "type": "uuid",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "started_at",
+        "type": "timestamp with time zone",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "finished_at",
+        "type": "timestamp with time zone",
+        "not_null": false,
+        "default": null
+      },
+      {
+        "name": "outcome",
+        "type": "text",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "provider_request_id",
+        "type": "text",
+        "not_null": false,
+        "default": null
+      },
+      {
+        "name": "error_code",
+        "type": "text",
+        "not_null": false,
+        "default": null
+      }
+    ],
+    "device_sync_commands": [
+      {
+        "name": "store_id",
+        "type": "uuid",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "sync_command_id",
+        "type": "uuid",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "device_id",
+        "type": "uuid",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "session_id",
+        "type": "uuid",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "authority_epoch",
+        "type": "bigint",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "device_sequence",
+        "type": "bigint",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "base_version",
+        "type": "bigint",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "layout_id",
+        "type": "uuid",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "operation",
+        "type": "text",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "group_id",
+        "type": "uuid",
+        "not_null": false,
+        "default": null
+      },
+      {
+        "name": "call_id",
+        "type": "uuid",
+        "not_null": false,
+        "default": null
+      },
+      {
+        "name": "allocation_id",
+        "type": "uuid",
+        "not_null": false,
+        "default": null
+      },
+      {
+        "name": "table_id",
+        "type": "uuid",
+        "not_null": false,
+        "default": null
+      },
+      {
+        "name": "occurred_at",
+        "type": "timestamp with time zone",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "command_digest",
+        "type": "text",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "sync_status",
+        "type": "text",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "received_at",
+        "type": "timestamp with time zone",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "resolved_at",
+        "type": "timestamp with time zone",
+        "not_null": false,
+        "default": null
+      },
+      {
+        "name": "result_version",
+        "type": "bigint",
+        "not_null": false,
+        "default": null
+      },
+      {
+        "name": "reason_code",
+        "type": "text",
+        "not_null": false,
+        "default": null
+      }
+    ],
+    "device_sync_cursors": [
+      {
+        "name": "store_id",
+        "type": "uuid",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "device_id",
+        "type": "uuid",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "session_id",
+        "type": "uuid",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "authority_epoch",
+        "type": "bigint",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "last_received_sequence",
+        "type": "bigint",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "last_resolved_sequence",
+        "type": "bigint",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "updated_at",
+        "type": "timestamp with time zone",
+        "not_null": true,
+        "default": null
+      }
+    ],
+    "dining_tables": [
+      {
+        "name": "store_id",
+        "type": "uuid",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "table_id",
+        "type": "uuid",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "row_id",
+        "type": "uuid",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "table_number",
+        "type": "text",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "row_position",
+        "type": "integer",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "seat_count",
+        "type": "integer",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "is_window",
+        "type": "boolean",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "order_qr_enabled",
+        "type": "boolean",
+        "not_null": true,
+        "default": null
+      }
+    ],
+    "command_receipts": [
+      {
+        "name": "store_id",
+        "type": "uuid",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "command_id",
+        "type": "uuid",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "session_id",
+        "type": "uuid",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "actor_digest",
+        "type": "text",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "operation_name",
+        "type": "text",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "key_digest",
+        "type": "text",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "request_digest",
+        "type": "text",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "command_status",
+        "type": "text",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "authority_epoch",
+        "type": "bigint",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp with time zone",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "completed_at",
+        "type": "timestamp with time zone",
+        "not_null": false,
+        "default": null
+      },
+      {
+        "name": "replay_until",
+        "type": "timestamp with time zone",
+        "not_null": false,
+        "default": null
+      },
+      {
+        "name": "http_status",
+        "type": "integer",
+        "not_null": false,
+        "default": null
+      },
+      {
+        "name": "result_group_id",
+        "type": "uuid",
+        "not_null": false,
+        "default": null
+      },
+      {
+        "name": "result_ticket_code",
+        "type": "text",
+        "not_null": false,
+        "default": null
+      },
+      {
+        "name": "result_group_status",
+        "type": "text",
+        "not_null": false,
+        "default": null
+      },
+      {
+        "name": "result_arrival_confirmed",
+        "type": "boolean",
+        "not_null": false,
+        "default": null
+      },
+      {
+        "name": "result_state_version",
+        "type": "bigint",
+        "not_null": false,
+        "default": null
+      },
+      {
+        "name": "result_call_id",
+        "type": "uuid",
+        "not_null": false,
+        "default": null
+      },
+      {
+        "name": "result_assigned_table",
+        "type": "text",
+        "not_null": false,
+        "default": null
+      },
+      {
+        "name": "result_called_at",
+        "type": "timestamp with time zone",
+        "not_null": false,
+        "default": null
+      },
+      {
+        "name": "result_review_due_at",
+        "type": "timestamp with time zone",
+        "not_null": false,
+        "default": null
+      },
+      {
+        "name": "result_recall_count",
+        "type": "integer",
+        "not_null": false,
+        "default": null
+      },
+      {
+        "name": "result_table_status",
+        "type": "text",
+        "not_null": false,
+        "default": null
+      },
+      {
+        "name": "result_expires_at",
+        "type": "timestamp with time zone",
+        "not_null": false,
+        "default": null
+      },
+      {
+        "name": "result_access_scope",
+        "type": "text",
+        "not_null": false,
+        "default": null
+      }
+    ],
+    "group_calls": [
+      {
+        "name": "store_id",
+        "type": "uuid",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "call_id",
+        "type": "uuid",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "group_id",
+        "type": "uuid",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "call_number",
+        "type": "integer",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "call_status",
+        "type": "text",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "called_at",
+        "type": "timestamp with time zone",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "review_due_at",
+        "type": "timestamp with time zone",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "last_notified_at",
+        "type": "timestamp with time zone",
+        "not_null": false,
+        "default": null
+      },
+      {
+        "name": "recall_count",
+        "type": "integer",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "closed_at",
+        "type": "timestamp with time zone",
+        "not_null": false,
+        "default": null
+      }
+    ],
+    "hq_policy_templates": [
+      {
+        "name": "organization_id",
+        "type": "uuid",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "template_id",
+        "type": "uuid",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "version_number",
+        "type": "integer",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "join_radius_metres",
+        "type": "integer",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "arrival_radius_metres",
+        "type": "integer",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "call_grace_seconds",
+        "type": "integer",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "allow_join_override",
+        "type": "boolean",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "allow_arrival_override",
+        "type": "boolean",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "allow_grace_override",
+        "type": "boolean",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp with time zone",
+        "not_null": true,
+        "default": null
+      }
+    ],
+    "device_health": [
+      {
+        "name": "store_id",
+        "type": "uuid",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "device_id",
+        "type": "uuid",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "heartbeat_sequence",
+        "type": "bigint",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "last_seen_at",
+        "type": "timestamp with time zone",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "device_time",
+        "type": "timestamp with time zone",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "fault_code",
+        "type": "text",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "connectivity_status",
+        "type": "text",
+        "not_null": true,
+        "default": null
+      }
+    ],
+    "operator_store_grants": [
+      {
+        "name": "store_id",
+        "type": "uuid",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "account_id",
+        "type": "uuid",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "granted_at",
+        "type": "timestamp with time zone",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "revoked_at",
+        "type": "timestamp with time zone",
+        "not_null": false,
+        "default": null
+      }
+    ],
+    "operator_accounts": [
+      {
+        "name": "account_id",
+        "type": "uuid",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "organization_id",
+        "type": "uuid",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "login_digest",
+        "type": "text",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "email_ciphertext",
+        "type": "text",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "display_name",
+        "type": "text",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "password_verifier",
+        "type": "text",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "account_role",
+        "type": "text",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp with time zone",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "disabled_at",
+        "type": "timestamp with time zone",
+        "not_null": false,
+        "default": null
+      }
+    ],
+    "physical_table_facts": [
+      {
+        "name": "store_id",
+        "type": "uuid",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "fact_id",
+        "type": "uuid",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "sync_command_id",
+        "type": "uuid",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "session_id",
+        "type": "uuid",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "table_id",
+        "type": "uuid",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "group_id",
+        "type": "uuid",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "fact_kind",
+        "type": "text",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "occurred_at",
+        "type": "timestamp with time zone",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "recorded_at",
+        "type": "timestamp with time zone",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "quarantine_active",
+        "type": "boolean",
+        "not_null": true,
+        "default": null
+      }
+    ],
+    "sync_conflicts": [
+      {
+        "name": "store_id",
+        "type": "uuid",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "conflict_id",
+        "type": "uuid",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "sync_command_id",
+        "type": "uuid",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "server_version",
+        "type": "bigint",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "reason_code",
+        "type": "text",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "conflict_status",
+        "type": "text",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp with time zone",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "resolved_at",
+        "type": "timestamp with time zone",
+        "not_null": false,
+        "default": null
+      },
+      {
+        "name": "resolution_code",
+        "type": "text",
+        "not_null": false,
+        "default": null
+      },
+      {
+        "name": "resolver_account_id",
+        "type": "uuid",
+        "not_null": false,
+        "default": null
+      }
+    ],
+    "command_secret_replays": [
+      {
+        "name": "store_id",
+        "type": "uuid",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "command_id",
+        "type": "uuid",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "secret_kind",
+        "type": "text",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "ciphertext",
+        "type": "text",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "key_version",
+        "type": "text",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "nonce",
+        "type": "text",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "auth_tag",
+        "type": "text",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp with time zone",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "expires_at",
+        "type": "timestamp with time zone",
+        "not_null": true,
+        "default": null
+      }
+    ],
+    "queue_events": [
+      {
+        "name": "store_id",
+        "type": "uuid",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "event_id",
+        "type": "uuid",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "session_id",
+        "type": "uuid",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "event_sequence",
+        "type": "bigint",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "group_id",
+        "type": "uuid",
+        "not_null": false,
+        "default": null
+      },
+      {
+        "name": "call_id",
+        "type": "uuid",
+        "not_null": false,
+        "default": null
+      },
+      {
+        "name": "allocation_id",
+        "type": "uuid",
+        "not_null": false,
+        "default": null
+      },
+      {
+        "name": "actor_device_id",
+        "type": "uuid",
+        "not_null": false,
+        "default": null
+      },
+      {
+        "name": "actor_kind",
+        "type": "text",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "event_type",
+        "type": "text",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "previous_status",
+        "type": "text",
+        "not_null": false,
+        "default": null
+      },
+      {
+        "name": "next_status",
+        "type": "text",
+        "not_null": false,
+        "default": null
+      },
+      {
+        "name": "previous_queue_sequence",
+        "type": "bigint",
+        "not_null": false,
+        "default": null
+      },
+      {
+        "name": "next_queue_sequence",
+        "type": "bigint",
+        "not_null": false,
+        "default": null
+      },
+      {
+        "name": "occurred_at",
+        "type": "timestamp with time zone",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "recorded_at",
+        "type": "timestamp with time zone",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "reason",
+        "type": "text",
+        "not_null": false,
+        "default": null
+      }
+    ],
+    "partner_credentials": [
+      {
+        "name": "partner_id",
+        "type": "uuid",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "organization_id",
+        "type": "uuid",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "partner_name",
+        "type": "text",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "token_hash",
+        "type": "text",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp with time zone",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "expires_at",
+        "type": "timestamp with time zone",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "revoked_at",
+        "type": "timestamp with time zone",
+        "not_null": false,
+        "default": null
+      }
+    ],
+    "device_credentials": [
+      {
+        "name": "store_id",
+        "type": "uuid",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "credential_id",
+        "type": "uuid",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "device_id",
+        "type": "uuid",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "token_hash",
+        "type": "text",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp with time zone",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "expires_at",
+        "type": "timestamp with time zone",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "revoked_at",
+        "type": "timestamp with time zone",
+        "not_null": false,
+        "default": null
+      }
+    ],
+    "device_fault_events": [
+      {
+        "name": "store_id",
+        "type": "uuid",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "fault_event_id",
+        "type": "uuid",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "device_id",
+        "type": "uuid",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "heartbeat_sequence",
+        "type": "bigint",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "previous_fault_code",
+        "type": "text",
+        "not_null": false,
+        "default": null
+      },
+      {
+        "name": "fault_code",
+        "type": "text",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "received_at",
+        "type": "timestamp with time zone",
+        "not_null": true,
+        "default": null
+      }
+    ],
+    "organizations": [
+      {
+        "name": "organization_id",
+        "type": "uuid",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "organization_name",
+        "type": "text",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp with time zone",
+        "not_null": true,
+        "default": null
+      }
+    ],
+    "stores": [
+      {
+        "name": "store_id",
+        "type": "uuid",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "organization_id",
+        "type": "uuid",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "store_code",
+        "type": "text",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "store_name",
+        "type": "text",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "address",
+        "type": "text",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "time_zone",
+        "type": "text",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "latitude",
+        "type": "double precision",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "longitude",
+        "type": "double precision",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "store_status",
+        "type": "text",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp with time zone",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "contact_phone_ciphertext",
+        "type": "text",
+        "not_null": false,
+        "default": null
+      },
+      {
+        "name": "contact_email_ciphertext",
+        "type": "text",
+        "not_null": false,
+        "default": null
+      }
+    ],
+    "watch_codes": [
+      {
+        "name": "store_id",
+        "type": "uuid",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "watch_code_id",
+        "type": "uuid",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "group_id",
+        "type": "uuid",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "code_digest",
+        "type": "text",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "issued_at",
+        "type": "timestamp with time zone",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "expires_at",
+        "type": "timestamp with time zone",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "revoked_at",
+        "type": "timestamp with time zone",
+        "not_null": false,
+        "default": null
+      }
+    ],
+    "arrival_challenges": [
+      {
+        "name": "store_id",
+        "type": "uuid",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "challenge_id",
+        "type": "uuid",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "session_id",
+        "type": "uuid",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "code_digest",
+        "type": "text",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "valid_from",
+        "type": "timestamp with time zone",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "expires_at",
+        "type": "timestamp with time zone",
+        "not_null": true,
+        "default": null
+      }
+    ],
+    "store_devices": [
+      {
+        "name": "store_id",
+        "type": "uuid",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "device_id",
+        "type": "uuid",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "device_kind",
+        "type": "text",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "device_label",
+        "type": "text",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "registered_at",
+        "type": "timestamp with time zone",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "revoked_at",
+        "type": "timestamp with time zone",
+        "not_null": false,
+        "default": null
+      }
+    ],
+    "store_join_qr_versions": [
+      {
+        "name": "store_id",
+        "type": "uuid",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "qr_id",
+        "type": "uuid",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp with time zone",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "revoked_at",
+        "type": "timestamp with time zone",
+        "not_null": false,
+        "default": null
+      }
+    ],
+    "store_policy_versions": [
+      {
+        "name": "store_id",
+        "type": "uuid",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "policy_id",
+        "type": "uuid",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "version_number",
+        "type": "integer",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "join_radius_metres",
+        "type": "integer",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "arrival_radius_metres",
+        "type": "integer",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "call_grace_seconds",
+        "type": "integer",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "max_party_size",
+        "type": "integer",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "max_deferrals",
+        "type": "integer",
+        "not_null": false,
+        "default": null
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp with time zone",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "source_template_id",
+        "type": "uuid",
+        "not_null": false,
+        "default": null
+      }
+    ],
+    "operating_sessions": [
+      {
+        "name": "store_id",
+        "type": "uuid",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "session_id",
+        "type": "uuid",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "business_date",
+        "type": "date",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "layout_id",
+        "type": "uuid",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "policy_id",
+        "type": "uuid",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "owner_device_id",
+        "type": "uuid",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "authority_epoch",
+        "type": "bigint",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "next_queue_sequence",
+        "type": "bigint",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "next_ticket_number",
+        "type": "integer",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "last_event_sequence",
+        "type": "bigint",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "state_version",
+        "type": "bigint",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "opened_at",
+        "type": "timestamp with time zone",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "closed_at",
+        "type": "timestamp with time zone",
+        "not_null": false,
+        "default": null
+      },
+      {
+        "name": "sync_snapshot_revision",
+        "type": "bigint",
+        "not_null": true,
+        "default": "0"
+      }
+    ],
+    "layout_versions": [
+      {
+        "name": "store_id",
+        "type": "uuid",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "layout_id",
+        "type": "uuid",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "version_number",
+        "type": "integer",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "layout_status",
+        "type": "text",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp with time zone",
+        "not_null": true,
+        "default": null
+      }
+    ],
+    "store_pin_verifiers": [
+      {
+        "name": "store_id",
+        "type": "uuid",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "pin_verifier",
+        "type": "text",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "rotated_at",
+        "type": "timestamp with time zone",
+        "not_null": true,
+        "default": null
+      }
+    ],
+    "store_opening_periods": [
+      {
+        "name": "store_id",
+        "type": "uuid",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "period_id",
+        "type": "uuid",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "weekday",
+        "type": "integer",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "opens_minute",
+        "type": "integer",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "closes_minute",
+        "type": "integer",
+        "not_null": true,
+        "default": null
+      }
+    ],
+    "table_allocations": [
+      {
+        "name": "store_id",
+        "type": "uuid",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "allocation_id",
+        "type": "uuid",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "table_id",
+        "type": "uuid",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "call_id",
+        "type": "uuid",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "allocation_status",
+        "type": "text",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "held_at",
+        "type": "timestamp with time zone",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "seated_at",
+        "type": "timestamp with time zone",
+        "not_null": false,
+        "default": null
+      },
+      {
+        "name": "released_at",
+        "type": "timestamp with time zone",
+        "not_null": false,
+        "default": null
+      }
+    ],
+    "layout_rows": [
+      {
+        "name": "store_id",
+        "type": "uuid",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "row_id",
+        "type": "uuid",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "layout_id",
+        "type": "uuid",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "row_number",
+        "type": "integer",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "row_label",
+        "type": "text",
+        "not_null": true,
+        "default": null
+      }
+    ],
+    "ticket_access_grants": [
+      {
+        "name": "store_id",
+        "type": "uuid",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "access_id",
+        "type": "uuid",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "group_id",
+        "type": "uuid",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "token_hash",
+        "type": "text",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "access_scope",
+        "type": "text",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp with time zone",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "expires_at",
+        "type": "timestamp with time zone",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "revoked_at",
+        "type": "timestamp with time zone",
+        "not_null": false,
+        "default": null
+      }
+    ],
+    "delivery_jobs": [
+      {
+        "name": "store_id",
+        "type": "uuid",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "job_id",
+        "type": "uuid",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "session_id",
+        "type": "uuid",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "event_id",
+        "type": "uuid",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "group_id",
+        "type": "uuid",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "call_id",
+        "type": "uuid",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "target_device_id",
+        "type": "uuid",
+        "not_null": false,
+        "default": null
+      },
+      {
+        "name": "channel",
+        "type": "text",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "lane_key",
+        "type": "text",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "event_sequence",
+        "type": "bigint",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "job_status",
+        "type": "text",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "attempt_count",
+        "type": "integer",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "next_attempt_at",
+        "type": "timestamp with time zone",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "expires_at",
+        "type": "timestamp with time zone",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "lease_token",
+        "type": "uuid",
+        "not_null": false,
+        "default": null
+      },
+      {
+        "name": "lease_until",
+        "type": "timestamp with time zone",
+        "not_null": false,
+        "default": null
+      },
+      {
+        "name": "accepted_at",
+        "type": "timestamp with time zone",
+        "not_null": false,
+        "default": null
+      },
+      {
+        "name": "delivered_at",
+        "type": "timestamp with time zone",
+        "not_null": false,
+        "default": null
+      },
+      {
+        "name": "terminal_reason",
+        "type": "text",
+        "not_null": false,
+        "default": null
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp with time zone",
+        "not_null": true,
+        "default": null
+      }
+    ],
+    "queue_groups": [
+      {
+        "name": "store_id",
+        "type": "uuid",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "group_id",
+        "type": "uuid",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "session_id",
+        "type": "uuid",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "ticket_number",
+        "type": "integer",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "queue_sequence",
+        "type": "bigint",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "party_size",
+        "type": "integer",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "wants_window",
+        "type": "boolean",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "join_source",
+        "type": "text",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "group_status",
+        "type": "text",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "arrival_confirmed_at",
+        "type": "timestamp with time zone",
+        "not_null": false,
+        "default": null
+      },
+      {
+        "name": "joined_at",
+        "type": "timestamp with time zone",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "deferral_count",
+        "type": "integer",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "ended_at",
+        "type": "timestamp with time zone",
+        "not_null": false,
+        "default": null
+      }
+    ],
+    "api_rate_windows": [
+      {
+        "name": "scope_digest",
+        "type": "text",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "window_start",
+        "type": "timestamp with time zone",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "request_count",
+        "type": "integer",
+        "not_null": true,
+        "default": null
+      },
+      {
+        "name": "expires_at",
+        "type": "timestamp with time zone",
+        "not_null": true,
+        "default": null
+      }
+    ]
+  },
+  "constraints": [
+    {
+      "table": "administrative_audit_events",
+      "name": "pk_administrative_audit_events",
+      "type": "p",
+      "columns": [
+        "admin_event_id"
+      ]
+    },
+    {
+      "table": "operator_sessions",
+      "name": "ck_operator_session_expiry",
+      "type": "c",
+      "columns": []
+    },
+    {
+      "table": "operator_sessions",
+      "name": "pk_operator_sessions",
+      "type": "p",
+      "columns": [
+        "operator_session_id"
+      ]
+    },
+    {
+      "table": "operator_sessions",
+      "name": "uq_operator_session_hash",
+      "type": "u",
+      "columns": [
+        "token_hash"
+      ]
+    },
+    {
+      "table": "delivery_receipts",
+      "name": "ck_receipt_source",
+      "type": "c",
+      "columns": []
+    },
+    {
+      "table": "delivery_receipts",
+      "name": "ck_receipt_status",
+      "type": "c",
+      "columns": []
+    },
+    {
+      "table": "delivery_receipts",
+      "name": "pk_delivery_receipts",
+      "type": "p",
+      "columns": [
+        "store_id",
+        "receipt_id"
+      ]
+    },
+    {
+      "table": "delivery_receipts",
+      "name": "uq_delivery_receipt_event",
+      "type": "u",
+      "columns": [
+        "source_kind",
+        "source_event_digest"
+      ]
+    },
+    {
+      "table": "delivery_attempts",
+      "name": "ck_attempt_number",
+      "type": "c",
+      "columns": []
+    },
+    {
+      "table": "delivery_attempts",
+      "name": "ck_attempt_outcome",
+      "type": "c",
+      "columns": []
+    },
+    {
+      "table": "delivery_attempts",
+      "name": "pk_delivery_attempts",
+      "type": "p",
+      "columns": [
+        "store_id",
+        "attempt_id"
+      ]
+    },
+    {
+      "table": "delivery_attempts",
+      "name": "uq_delivery_attempt_lease",
+      "type": "u",
+      "columns": [
+        "lease_token"
+      ]
+    },
+    {
+      "table": "delivery_attempts",
+      "name": "uq_delivery_attempt_number",
+      "type": "u",
+      "columns": [
+        "store_id",
+        "job_id",
+        "attempt_number"
+      ]
+    },
+    {
+      "table": "device_sync_commands",
+      "name": "ck_sync_sequence",
+      "type": "c",
+      "columns": []
+    },
+    {
+      "table": "device_sync_commands",
+      "name": "pk_device_sync_commands",
+      "type": "p",
+      "columns": [
+        "store_id",
+        "sync_command_id"
+      ]
+    },
+    {
+      "table": "device_sync_commands",
+      "name": "uq_sync_device_sequence",
+      "type": "u",
+      "columns": [
+        "store_id",
+        "device_id",
+        "session_id",
+        "authority_epoch",
+        "device_sequence"
+      ]
+    },
+    {
+      "table": "device_sync_cursors",
+      "name": "ck_sync_cursor",
+      "type": "c",
+      "columns": []
+    },
+    {
+      "table": "device_sync_cursors",
+      "name": "pk_device_sync_cursors",
+      "type": "p",
+      "columns": [
+        "store_id",
+        "device_id",
+        "session_id",
+        "authority_epoch"
+      ]
+    },
+    {
+      "table": "dining_tables",
+      "name": "ck_table_capacity",
+      "type": "c",
+      "columns": []
+    },
+    {
+      "table": "dining_tables",
+      "name": "pk_dining_tables",
+      "type": "p",
+      "columns": [
+        "store_id",
+        "table_id"
+      ]
+    },
+    {
+      "table": "dining_tables",
+      "name": "uq_row_table_number",
+      "type": "u",
+      "columns": [
+        "store_id",
+        "row_id",
+        "table_number"
+      ]
+    },
+    {
+      "table": "dining_tables",
+      "name": "uq_row_table_position",
+      "type": "u",
+      "columns": [
+        "store_id",
+        "row_id",
+        "row_position"
+      ]
+    },
+    {
+      "table": "command_receipts",
+      "name": "ck_command_completion",
+      "type": "c",
+      "columns": []
+    },
+    {
+      "table": "command_receipts",
+      "name": "ck_command_status",
+      "type": "c",
+      "columns": []
+    },
+    {
+      "table": "command_receipts",
+      "name": "pk_command_receipts",
+      "type": "p",
+      "columns": [
+        "store_id",
+        "command_id"
+      ]
+    },
+    {
+      "table": "command_receipts",
+      "name": "uq_command_key",
+      "type": "u",
+      "columns": [
+        "store_id",
+        "actor_digest",
+        "operation_name",
+        "key_digest"
+      ]
+    },
+    {
+      "table": "group_calls",
+      "name": "ck_call_closed",
+      "type": "c",
+      "columns": []
+    },
+    {
+      "table": "group_calls",
+      "name": "ck_call_status",
+      "type": "c",
+      "columns": []
+    },
+    {
+      "table": "group_calls",
+      "name": "ck_call_values",
+      "type": "c",
+      "columns": []
+    },
+    {
+      "table": "group_calls",
+      "name": "pk_group_calls",
+      "type": "p",
+      "columns": [
+        "store_id",
+        "call_id"
+      ]
+    },
+    {
+      "table": "group_calls",
+      "name": "uq_group_call_number",
+      "type": "u",
+      "columns": [
+        "store_id",
+        "group_id",
+        "call_number"
+      ]
+    },
+    {
+      "table": "hq_policy_templates",
+      "name": "pk_hq_policy_templates",
+      "type": "p",
+      "columns": [
+        "organization_id",
+        "template_id"
+      ]
+    },
+    {
+      "table": "hq_policy_templates",
+      "name": "uq_hq_policy_version",
+      "type": "u",
+      "columns": [
+        "organization_id",
+        "version_number"
+      ]
+    },
+    {
+      "table": "device_health",
+      "name": "ck_device_health",
+      "type": "c",
+      "columns": []
+    },
+    {
+      "table": "device_health",
+      "name": "pk_device_health",
+      "type": "p",
+      "columns": [
+        "store_id",
+        "device_id"
+      ]
+    },
+    {
+      "table": "operator_store_grants",
+      "name": "pk_operator_store_grants",
+      "type": "p",
+      "columns": [
+        "store_id",
+        "account_id"
+      ]
+    },
+    {
+      "table": "operator_accounts",
+      "name": "ck_operator_role",
+      "type": "c",
+      "columns": []
+    },
+    {
+      "table": "operator_accounts",
+      "name": "pk_operator_accounts",
+      "type": "p",
+      "columns": [
+        "account_id"
+      ]
+    },
+    {
+      "table": "operator_accounts",
+      "name": "uq_operator_login",
+      "type": "u",
+      "columns": [
+        "login_digest"
+      ]
+    },
+    {
+      "table": "physical_table_facts",
+      "name": "ck_physical_kind",
+      "type": "c",
+      "columns": []
+    },
+    {
+      "table": "physical_table_facts",
+      "name": "pk_physical_table_facts",
+      "type": "p",
+      "columns": [
+        "store_id",
+        "fact_id"
+      ]
+    },
+    {
+      "table": "physical_table_facts",
+      "name": "uq_physical_command",
+      "type": "u",
+      "columns": [
+        "store_id",
+        "sync_command_id"
+      ]
+    },
+    {
+      "table": "sync_conflicts",
+      "name": "ck_conflict_state",
+      "type": "c",
+      "columns": []
+    },
+    {
+      "table": "sync_conflicts",
+      "name": "pk_sync_conflicts",
+      "type": "p",
+      "columns": [
+        "store_id",
+        "conflict_id"
+      ]
+    },
+    {
+      "table": "sync_conflicts",
+      "name": "uq_conflict_command",
+      "type": "u",
+      "columns": [
+        "store_id",
+        "sync_command_id"
+      ]
+    },
+    {
+      "table": "command_secret_replays",
+      "name": "ck_replay_window",
+      "type": "c",
+      "columns": []
+    },
+    {
+      "table": "command_secret_replays",
+      "name": "pk_command_secret_replays",
+      "type": "p",
+      "columns": [
+        "store_id",
+        "command_id"
+      ]
+    },
+    {
+      "table": "queue_events",
+      "name": "ck_event_actor",
+      "type": "c",
+      "columns": []
+    },
+    {
+      "table": "queue_events",
+      "name": "ck_event_sequence",
+      "type": "c",
+      "columns": []
+    },
+    {
+      "table": "queue_events",
+      "name": "ck_event_type",
+      "type": "c",
+      "columns": []
+    },
+    {
+      "table": "queue_events",
+      "name": "pk_queue_events",
+      "type": "p",
+      "columns": [
+        "store_id",
+        "event_id"
+      ]
+    },
+    {
+      "table": "queue_events",
+      "name": "uq_session_event_sequence",
+      "type": "u",
+      "columns": [
+        "store_id",
+        "session_id",
+        "event_sequence"
+      ]
+    },
+    {
+      "table": "partner_credentials",
+      "name": "pk_partner_credentials",
+      "type": "p",
+      "columns": [
+        "partner_id"
+      ]
+    },
+    {
+      "table": "partner_credentials",
+      "name": "uq_partner_token_hash",
+      "type": "u",
+      "columns": [
+        "token_hash"
+      ]
+    },
+    {
+      "table": "device_credentials",
+      "name": "pk_device_credentials",
+      "type": "p",
+      "columns": [
+        "store_id",
+        "credential_id"
+      ]
+    },
+    {
+      "table": "device_credentials",
+      "name": "uq_device_credential_hash",
+      "type": "u",
+      "columns": [
+        "token_hash"
+      ]
+    },
+    {
+      "table": "device_fault_events",
+      "name": "pk_device_fault_events",
+      "type": "p",
+      "columns": [
+        "store_id",
+        "fault_event_id"
+      ]
+    },
+    {
+      "table": "device_fault_events",
+      "name": "uq_fault_heartbeat",
+      "type": "u",
+      "columns": [
+        "store_id",
+        "device_id",
+        "heartbeat_sequence",
+        "fault_code"
+      ]
+    },
+    {
+      "table": "organizations",
+      "name": "pk_organizations",
+      "type": "p",
+      "columns": [
+        "organization_id"
+      ]
+    },
+    {
+      "table": "stores",
+      "name": "ck_store_coordinates",
+      "type": "c",
+      "columns": []
+    },
+    {
+      "table": "stores",
+      "name": "ck_store_status",
+      "type": "c",
+      "columns": []
+    },
+    {
+      "table": "stores",
+      "name": "pk_stores",
+      "type": "p",
+      "columns": [
+        "store_id"
+      ]
+    },
+    {
+      "table": "stores",
+      "name": "uq_store_code",
+      "type": "u",
+      "columns": [
+        "store_code"
+      ]
+    },
+    {
+      "table": "watch_codes",
+      "name": "ck_watch_expiry",
+      "type": "c",
+      "columns": []
+    },
+    {
+      "table": "watch_codes",
+      "name": "pk_watch_codes",
+      "type": "p",
+      "columns": [
+        "store_id",
+        "watch_code_id"
+      ]
+    },
+    {
+      "table": "arrival_challenges",
+      "name": "ck_arrival_window",
+      "type": "c",
+      "columns": []
+    },
+    {
+      "table": "arrival_challenges",
+      "name": "pk_arrival_challenges",
+      "type": "p",
+      "columns": [
+        "store_id",
+        "challenge_id"
+      ]
+    },
+    {
+      "table": "arrival_challenges",
+      "name": "uq_session_arrival_digest",
+      "type": "u",
+      "columns": [
+        "store_id",
+        "session_id",
+        "code_digest"
+      ]
+    },
+    {
+      "table": "store_devices",
+      "name": "ck_device_kind",
+      "type": "c",
+      "columns": []
+    },
+    {
+      "table": "store_devices",
+      "name": "pk_store_devices",
+      "type": "p",
+      "columns": [
+        "store_id",
+        "device_id"
+      ]
+    },
+    {
+      "table": "store_join_qr_versions",
+      "name": "pk_store_join_qr_versions",
+      "type": "p",
+      "columns": [
+        "store_id",
+        "qr_id"
+      ]
+    },
+    {
+      "table": "store_policy_versions",
+      "name": "ck_policy_ranges",
+      "type": "c",
+      "columns": []
+    },
+    {
+      "table": "store_policy_versions",
+      "name": "pk_store_policy_versions",
+      "type": "p",
+      "columns": [
+        "store_id",
+        "policy_id"
+      ]
+    },
+    {
+      "table": "store_policy_versions",
+      "name": "uq_store_policy_version",
+      "type": "u",
+      "columns": [
+        "store_id",
+        "version_number"
+      ]
+    },
+    {
+      "table": "operating_sessions",
+      "name": "ck_session_counters",
+      "type": "c",
+      "columns": []
+    },
+    {
+      "table": "operating_sessions",
+      "name": "ck_session_time",
+      "type": "c",
+      "columns": []
+    },
+    {
+      "table": "operating_sessions",
+      "name": "pk_operating_sessions",
+      "type": "p",
+      "columns": [
+        "store_id",
+        "session_id"
+      ]
+    },
+    {
+      "table": "layout_versions",
+      "name": "ck_layout_status",
+      "type": "c",
+      "columns": []
+    },
+    {
+      "table": "layout_versions",
+      "name": "pk_layout_versions",
+      "type": "p",
+      "columns": [
+        "store_id",
+        "layout_id"
+      ]
+    },
+    {
+      "table": "layout_versions",
+      "name": "uq_layout_version",
+      "type": "u",
+      "columns": [
+        "store_id",
+        "version_number"
+      ]
+    },
+    {
+      "table": "store_pin_verifiers",
+      "name": "pk_store_pin_verifiers",
+      "type": "p",
+      "columns": [
+        "store_id"
+      ]
+    },
+    {
+      "table": "store_opening_periods",
+      "name": "ck_opening_period",
+      "type": "c",
+      "columns": []
+    },
+    {
+      "table": "store_opening_periods",
+      "name": "pk_store_opening_periods",
+      "type": "p",
+      "columns": [
+        "store_id",
+        "period_id"
+      ]
+    },
+    {
+      "table": "table_allocations",
+      "name": "ck_allocation_status",
+      "type": "c",
+      "columns": []
+    },
+    {
+      "table": "table_allocations",
+      "name": "ck_allocation_times",
+      "type": "c",
+      "columns": []
+    },
+    {
+      "table": "table_allocations",
+      "name": "pk_table_allocations",
+      "type": "p",
+      "columns": [
+        "store_id",
+        "allocation_id"
+      ]
+    },
+    {
+      "table": "table_allocations",
+      "name": "uq_call_allocation",
+      "type": "u",
+      "columns": [
+        "store_id",
+        "call_id"
+      ]
+    },
+    {
+      "table": "layout_rows",
+      "name": "ck_row_number",
+      "type": "c",
+      "columns": []
+    },
+    {
+      "table": "layout_rows",
+      "name": "pk_layout_rows",
+      "type": "p",
+      "columns": [
+        "store_id",
+        "row_id"
+      ]
+    },
+    {
+      "table": "layout_rows",
+      "name": "uq_layout_row",
+      "type": "u",
+      "columns": [
+        "store_id",
+        "layout_id",
+        "row_number"
+      ]
+    },
+    {
+      "table": "ticket_access_grants",
+      "name": "ck_access_time",
+      "type": "c",
+      "columns": []
+    },
+    {
+      "table": "ticket_access_grants",
+      "name": "ck_ticket_scope",
+      "type": "c",
+      "columns": []
+    },
+    {
+      "table": "ticket_access_grants",
+      "name": "pk_ticket_access_grants",
+      "type": "p",
+      "columns": [
+        "store_id",
+        "access_id"
+      ]
+    },
+    {
+      "table": "ticket_access_grants",
+      "name": "uq_ticket_token_hash",
+      "type": "u",
+      "columns": [
+        "token_hash"
+      ]
+    },
+    {
+      "table": "delivery_jobs",
+      "name": "ck_delivery_channel",
+      "type": "c",
+      "columns": []
+    },
+    {
+      "table": "delivery_jobs",
+      "name": "ck_delivery_lease",
+      "type": "c",
+      "columns": []
+    },
+    {
+      "table": "delivery_jobs",
+      "name": "ck_delivery_status",
+      "type": "c",
+      "columns": []
+    },
+    {
+      "table": "delivery_jobs",
+      "name": "ck_delivery_values",
+      "type": "c",
+      "columns": []
+    },
+    {
+      "table": "delivery_jobs",
+      "name": "pk_delivery_jobs",
+      "type": "p",
+      "columns": [
+        "store_id",
+        "job_id"
+      ]
+    },
+    {
+      "table": "delivery_jobs",
+      "name": "uq_delivery_event_channel",
+      "type": "u",
+      "columns": [
+        "store_id",
+        "event_id",
+        "channel"
+      ]
+    },
+    {
+      "table": "queue_groups",
+      "name": "ck_group_source",
+      "type": "c",
+      "columns": []
+    },
+    {
+      "table": "queue_groups",
+      "name": "ck_group_status",
+      "type": "c",
+      "columns": []
+    },
+    {
+      "table": "queue_groups",
+      "name": "ck_group_values",
+      "type": "c",
+      "columns": []
+    },
+    {
+      "table": "queue_groups",
+      "name": "pk_queue_groups",
+      "type": "p",
+      "columns": [
+        "store_id",
+        "group_id"
+      ]
+    },
+    {
+      "table": "queue_groups",
+      "name": "uq_session_queue_sequence",
+      "type": "u",
+      "columns": [
+        "store_id",
+        "session_id",
+        "queue_sequence"
+      ]
+    },
+    {
+      "table": "queue_groups",
+      "name": "uq_session_ticket",
+      "type": "u",
+      "columns": [
+        "store_id",
+        "session_id",
+        "ticket_number"
+      ]
+    },
+    {
+      "table": "api_rate_windows",
+      "name": "ck_rate_count",
+      "type": "c",
+      "columns": []
+    },
+    {
+      "table": "api_rate_windows",
+      "name": "pk_api_rate_windows",
+      "type": "p",
+      "columns": [
+        "scope_digest",
+        "window_start"
+      ]
+    },
+    {
+      "table": "administrative_audit_events",
+      "name": "fk_administrative_audit_events_actor_account_id",
+      "type": "f",
+      "columns": [
+        "actor_account_id"
+      ],
+      "parent": "operator_accounts",
+      "parent_columns": [
+        "account_id"
+      ]
+    },
+    {
+      "table": "administrative_audit_events",
+      "name": "fk_administrative_audit_events_organization_id",
+      "type": "f",
+      "columns": [
+        "organization_id"
+      ],
+      "parent": "organizations",
+      "parent_columns": [
+        "organization_id"
+      ]
+    },
+    {
+      "table": "administrative_audit_events",
+      "name": "fk_administrative_audit_events_store_id",
+      "type": "f",
+      "columns": [
+        "store_id"
+      ],
+      "parent": "stores",
+      "parent_columns": [
+        "store_id"
+      ]
+    },
+    {
+      "table": "operator_sessions",
+      "name": "fk_operator_sessions_account_id",
+      "type": "f",
+      "columns": [
+        "account_id"
+      ],
+      "parent": "operator_accounts",
+      "parent_columns": [
+        "account_id"
+      ]
+    },
+    {
+      "table": "delivery_receipts",
+      "name": "fk_delivery_receipts_attempt_id",
+      "type": "f",
+      "columns": [
+        "attempt_id",
+        "store_id"
+      ],
+      "parent": "delivery_attempts",
+      "parent_columns": [
+        "attempt_id",
+        "store_id"
+      ]
+    },
+    {
+      "table": "delivery_receipts",
+      "name": "fk_delivery_receipts_job_id",
+      "type": "f",
+      "columns": [
+        "store_id",
+        "job_id"
+      ],
+      "parent": "delivery_jobs",
+      "parent_columns": [
+        "store_id",
+        "job_id"
+      ]
+    },
+    {
+      "table": "delivery_receipts",
+      "name": "fk_delivery_receipts_store_id",
+      "type": "f",
+      "columns": [
+        "store_id"
+      ],
+      "parent": "stores",
+      "parent_columns": [
+        "store_id"
+      ]
+    },
+    {
+      "table": "delivery_attempts",
+      "name": "fk_delivery_attempts_job_id",
+      "type": "f",
+      "columns": [
+        "store_id",
+        "job_id"
+      ],
+      "parent": "delivery_jobs",
+      "parent_columns": [
+        "store_id",
+        "job_id"
+      ]
+    },
+    {
+      "table": "delivery_attempts",
+      "name": "fk_delivery_attempts_store_id",
+      "type": "f",
+      "columns": [
+        "store_id"
+      ],
+      "parent": "stores",
+      "parent_columns": [
+        "store_id"
+      ]
+    },
+    {
+      "table": "device_sync_commands",
+      "name": "fk_device_sync_commands_device_id",
+      "type": "f",
+      "columns": [
+        "store_id",
+        "device_id"
+      ],
+      "parent": "store_devices",
+      "parent_columns": [
+        "store_id",
+        "device_id"
+      ]
+    },
+    {
+      "table": "device_sync_commands",
+      "name": "fk_device_sync_commands_layout_id",
+      "type": "f",
+      "columns": [
+        "store_id",
+        "layout_id"
+      ],
+      "parent": "layout_versions",
+      "parent_columns": [
+        "store_id",
+        "layout_id"
+      ]
+    },
+    {
+      "table": "device_sync_commands",
+      "name": "fk_device_sync_commands_session_id",
+      "type": "f",
+      "columns": [
+        "store_id",
+        "session_id"
+      ],
+      "parent": "operating_sessions",
+      "parent_columns": [
+        "store_id",
+        "session_id"
+      ]
+    },
+    {
+      "table": "device_sync_cursors",
+      "name": "fk_device_sync_cursors_device_id",
+      "type": "f",
+      "columns": [
+        "store_id",
+        "device_id"
+      ],
+      "parent": "store_devices",
+      "parent_columns": [
+        "store_id",
+        "device_id"
+      ]
+    },
+    {
+      "table": "device_sync_cursors",
+      "name": "fk_device_sync_cursors_session_id",
+      "type": "f",
+      "columns": [
+        "store_id",
+        "session_id"
+      ],
+      "parent": "operating_sessions",
+      "parent_columns": [
+        "store_id",
+        "session_id"
+      ]
+    },
+    {
+      "table": "dining_tables",
+      "name": "fk_dining_tables_row_id",
+      "type": "f",
+      "columns": [
+        "row_id",
+        "store_id"
+      ],
+      "parent": "layout_rows",
+      "parent_columns": [
+        "row_id",
+        "store_id"
+      ]
+    },
+    {
+      "table": "dining_tables",
+      "name": "fk_dining_tables_store_id",
+      "type": "f",
+      "columns": [
+        "store_id"
+      ],
+      "parent": "stores",
+      "parent_columns": [
+        "store_id"
+      ]
+    },
+    {
+      "table": "command_receipts",
+      "name": "fk_command_receipts_session_id",
+      "type": "f",
+      "columns": [
+        "store_id",
+        "session_id"
+      ],
+      "parent": "operating_sessions",
+      "parent_columns": [
+        "store_id",
+        "session_id"
+      ]
+    },
+    {
+      "table": "command_receipts",
+      "name": "fk_command_receipts_store_id",
+      "type": "f",
+      "columns": [
+        "store_id"
+      ],
+      "parent": "stores",
+      "parent_columns": [
+        "store_id"
+      ]
+    },
+    {
+      "table": "group_calls",
+      "name": "fk_group_calls_group_id",
+      "type": "f",
+      "columns": [
+        "store_id",
+        "group_id"
+      ],
+      "parent": "queue_groups",
+      "parent_columns": [
+        "store_id",
+        "group_id"
+      ]
+    },
+    {
+      "table": "group_calls",
+      "name": "fk_group_calls_store_id",
+      "type": "f",
+      "columns": [
+        "store_id"
+      ],
+      "parent": "stores",
+      "parent_columns": [
+        "store_id"
+      ]
+    },
+    {
+      "table": "hq_policy_templates",
+      "name": "fk_hq_policy_templates_organization_id",
+      "type": "f",
+      "columns": [
+        "organization_id"
+      ],
+      "parent": "organizations",
+      "parent_columns": [
+        "organization_id"
+      ]
+    },
+    {
+      "table": "device_health",
+      "name": "fk_device_health_device_id",
+      "type": "f",
+      "columns": [
+        "store_id",
+        "device_id"
+      ],
+      "parent": "store_devices",
+      "parent_columns": [
+        "store_id",
+        "device_id"
+      ]
+    },
+    {
+      "table": "operator_store_grants",
+      "name": "fk_operator_store_grants_account_id",
+      "type": "f",
+      "columns": [
+        "account_id"
+      ],
+      "parent": "operator_accounts",
+      "parent_columns": [
+        "account_id"
+      ]
+    },
+    {
+      "table": "operator_store_grants",
+      "name": "fk_operator_store_grants_store_id",
+      "type": "f",
+      "columns": [
+        "store_id"
+      ],
+      "parent": "stores",
+      "parent_columns": [
+        "store_id"
+      ]
+    },
+    {
+      "table": "operator_accounts",
+      "name": "fk_operator_accounts_organization_id",
+      "type": "f",
+      "columns": [
+        "organization_id"
+      ],
+      "parent": "organizations",
+      "parent_columns": [
+        "organization_id"
+      ]
+    },
+    {
+      "table": "physical_table_facts",
+      "name": "fk_physical_table_facts_group_id",
+      "type": "f",
+      "columns": [
+        "store_id",
+        "group_id"
+      ],
+      "parent": "queue_groups",
+      "parent_columns": [
+        "store_id",
+        "group_id"
+      ]
+    },
+    {
+      "table": "physical_table_facts",
+      "name": "fk_physical_table_facts_sync_command_id",
+      "type": "f",
+      "columns": [
+        "sync_command_id",
+        "store_id"
+      ],
+      "parent": "device_sync_commands",
+      "parent_columns": [
+        "sync_command_id",
+        "store_id"
+      ]
+    },
+    {
+      "table": "physical_table_facts",
+      "name": "fk_physical_table_facts_table_id",
+      "type": "f",
+      "columns": [
+        "store_id",
+        "table_id"
+      ],
+      "parent": "dining_tables",
+      "parent_columns": [
+        "store_id",
+        "table_id"
+      ]
+    },
+    {
+      "table": "sync_conflicts",
+      "name": "fk_sync_conflicts_sync_command_id",
+      "type": "f",
+      "columns": [
+        "sync_command_id",
+        "store_id"
+      ],
+      "parent": "device_sync_commands",
+      "parent_columns": [
+        "sync_command_id",
+        "store_id"
+      ]
+    },
+    {
+      "table": "command_secret_replays",
+      "name": "fk_command_secret_replays_command_id",
+      "type": "f",
+      "columns": [
+        "store_id",
+        "command_id"
+      ],
+      "parent": "command_receipts",
+      "parent_columns": [
+        "store_id",
+        "command_id"
+      ]
+    },
+    {
+      "table": "command_secret_replays",
+      "name": "fk_command_secret_replays_store_id",
+      "type": "f",
+      "columns": [
+        "store_id"
+      ],
+      "parent": "stores",
+      "parent_columns": [
+        "store_id"
+      ]
+    },
+    {
+      "table": "queue_events",
+      "name": "fk_queue_events_actor_device_id",
+      "type": "f",
+      "columns": [
+        "store_id",
+        "actor_device_id"
+      ],
+      "parent": "store_devices",
+      "parent_columns": [
+        "store_id",
+        "device_id"
+      ]
+    },
+    {
+      "table": "queue_events",
+      "name": "fk_queue_events_allocation_id",
+      "type": "f",
+      "columns": [
+        "allocation_id",
+        "store_id"
+      ],
+      "parent": "table_allocations",
+      "parent_columns": [
+        "allocation_id",
+        "store_id"
+      ]
+    },
+    {
+      "table": "queue_events",
+      "name": "fk_queue_events_call_id",
+      "type": "f",
+      "columns": [
+        "call_id",
+        "store_id"
+      ],
+      "parent": "group_calls",
+      "parent_columns": [
+        "call_id",
+        "store_id"
+      ]
+    },
+    {
+      "table": "queue_events",
+      "name": "fk_queue_events_group_id",
+      "type": "f",
+      "columns": [
+        "store_id",
+        "group_id"
+      ],
+      "parent": "queue_groups",
+      "parent_columns": [
+        "store_id",
+        "group_id"
+      ]
+    },
+    {
+      "table": "queue_events",
+      "name": "fk_queue_events_session_id",
+      "type": "f",
+      "columns": [
+        "store_id",
+        "session_id"
+      ],
+      "parent": "operating_sessions",
+      "parent_columns": [
+        "store_id",
+        "session_id"
+      ]
+    },
+    {
+      "table": "queue_events",
+      "name": "fk_queue_events_store_id",
+      "type": "f",
+      "columns": [
+        "store_id"
+      ],
+      "parent": "stores",
+      "parent_columns": [
+        "store_id"
+      ]
+    },
+    {
+      "table": "partner_credentials",
+      "name": "fk_partner_credentials_organization_id",
+      "type": "f",
+      "columns": [
+        "organization_id"
+      ],
+      "parent": "organizations",
+      "parent_columns": [
+        "organization_id"
+      ]
+    },
+    {
+      "table": "device_credentials",
+      "name": "fk_device_credentials_device_id",
+      "type": "f",
+      "columns": [
+        "store_id",
+        "device_id"
+      ],
+      "parent": "store_devices",
+      "parent_columns": [
+        "store_id",
+        "device_id"
+      ]
+    },
+    {
+      "table": "device_fault_events",
+      "name": "fk_device_fault_events_device_id",
+      "type": "f",
+      "columns": [
+        "store_id",
+        "device_id"
+      ],
+      "parent": "store_devices",
+      "parent_columns": [
+        "store_id",
+        "device_id"
+      ]
+    },
+    {
+      "table": "stores",
+      "name": "fk_stores_organization_id",
+      "type": "f",
+      "columns": [
+        "organization_id"
+      ],
+      "parent": "organizations",
+      "parent_columns": [
+        "organization_id"
+      ]
+    },
+    {
+      "table": "watch_codes",
+      "name": "fk_watch_codes_group_id",
+      "type": "f",
+      "columns": [
+        "store_id",
+        "group_id"
+      ],
+      "parent": "queue_groups",
+      "parent_columns": [
+        "store_id",
+        "group_id"
+      ]
+    },
+    {
+      "table": "watch_codes",
+      "name": "fk_watch_codes_store_id",
+      "type": "f",
+      "columns": [
+        "store_id"
+      ],
+      "parent": "stores",
+      "parent_columns": [
+        "store_id"
+      ]
+    },
+    {
+      "table": "arrival_challenges",
+      "name": "fk_arrival_challenges_session_id",
+      "type": "f",
+      "columns": [
+        "store_id",
+        "session_id"
+      ],
+      "parent": "operating_sessions",
+      "parent_columns": [
+        "store_id",
+        "session_id"
+      ]
+    },
+    {
+      "table": "arrival_challenges",
+      "name": "fk_arrival_challenges_store_id",
+      "type": "f",
+      "columns": [
+        "store_id"
+      ],
+      "parent": "stores",
+      "parent_columns": [
+        "store_id"
+      ]
+    },
+    {
+      "table": "store_devices",
+      "name": "fk_store_devices_store_id",
+      "type": "f",
+      "columns": [
+        "store_id"
+      ],
+      "parent": "stores",
+      "parent_columns": [
+        "store_id"
+      ]
+    },
+    {
+      "table": "store_join_qr_versions",
+      "name": "fk_store_join_qr_versions_store_id",
+      "type": "f",
+      "columns": [
+        "store_id"
+      ],
+      "parent": "stores",
+      "parent_columns": [
+        "store_id"
+      ]
+    },
+    {
+      "table": "store_policy_versions",
+      "name": "fk_store_policy_versions_store_id",
+      "type": "f",
+      "columns": [
+        "store_id"
+      ],
+      "parent": "stores",
+      "parent_columns": [
+        "store_id"
+      ]
+    },
+    {
+      "table": "operating_sessions",
+      "name": "fk_operating_sessions_layout_id",
+      "type": "f",
+      "columns": [
+        "store_id",
+        "layout_id"
+      ],
+      "parent": "layout_versions",
+      "parent_columns": [
+        "store_id",
+        "layout_id"
+      ]
+    },
+    {
+      "table": "operating_sessions",
+      "name": "fk_operating_sessions_owner_device_id",
+      "type": "f",
+      "columns": [
+        "store_id",
+        "owner_device_id"
+      ],
+      "parent": "store_devices",
+      "parent_columns": [
+        "store_id",
+        "device_id"
+      ]
+    },
+    {
+      "table": "operating_sessions",
+      "name": "fk_operating_sessions_policy_id",
+      "type": "f",
+      "columns": [
+        "store_id",
+        "policy_id"
+      ],
+      "parent": "store_policy_versions",
+      "parent_columns": [
+        "store_id",
+        "policy_id"
+      ]
+    },
+    {
+      "table": "operating_sessions",
+      "name": "fk_operating_sessions_store_id",
+      "type": "f",
+      "columns": [
+        "store_id"
+      ],
+      "parent": "stores",
+      "parent_columns": [
+        "store_id"
+      ]
+    },
+    {
+      "table": "layout_versions",
+      "name": "fk_layout_versions_store_id",
+      "type": "f",
+      "columns": [
+        "store_id"
+      ],
+      "parent": "stores",
+      "parent_columns": [
+        "store_id"
+      ]
+    },
+    {
+      "table": "store_pin_verifiers",
+      "name": "fk_store_pin_verifiers_store_id",
+      "type": "f",
+      "columns": [
+        "store_id"
+      ],
+      "parent": "stores",
+      "parent_columns": [
+        "store_id"
+      ]
+    },
+    {
+      "table": "store_opening_periods",
+      "name": "fk_store_opening_periods_store_id",
+      "type": "f",
+      "columns": [
+        "store_id"
+      ],
+      "parent": "stores",
+      "parent_columns": [
+        "store_id"
+      ]
+    },
+    {
+      "table": "table_allocations",
+      "name": "fk_table_allocations_call_id",
+      "type": "f",
+      "columns": [
+        "call_id",
+        "store_id"
+      ],
+      "parent": "group_calls",
+      "parent_columns": [
+        "call_id",
+        "store_id"
+      ]
+    },
+    {
+      "table": "table_allocations",
+      "name": "fk_table_allocations_store_id",
+      "type": "f",
+      "columns": [
+        "store_id"
+      ],
+      "parent": "stores",
+      "parent_columns": [
+        "store_id"
+      ]
+    },
+    {
+      "table": "table_allocations",
+      "name": "fk_table_allocations_table_id",
+      "type": "f",
+      "columns": [
+        "store_id",
+        "table_id"
+      ],
+      "parent": "dining_tables",
+      "parent_columns": [
+        "store_id",
+        "table_id"
+      ]
+    },
+    {
+      "table": "layout_rows",
+      "name": "fk_layout_rows_layout_id",
+      "type": "f",
+      "columns": [
+        "store_id",
+        "layout_id"
+      ],
+      "parent": "layout_versions",
+      "parent_columns": [
+        "store_id",
+        "layout_id"
+      ]
+    },
+    {
+      "table": "layout_rows",
+      "name": "fk_layout_rows_store_id",
+      "type": "f",
+      "columns": [
+        "store_id"
+      ],
+      "parent": "stores",
+      "parent_columns": [
+        "store_id"
+      ]
+    },
+    {
+      "table": "ticket_access_grants",
+      "name": "fk_ticket_access_grants_group_id",
+      "type": "f",
+      "columns": [
+        "store_id",
+        "group_id"
+      ],
+      "parent": "queue_groups",
+      "parent_columns": [
+        "store_id",
+        "group_id"
+      ]
+    },
+    {
+      "table": "ticket_access_grants",
+      "name": "fk_ticket_access_grants_store_id",
+      "type": "f",
+      "columns": [
+        "store_id"
+      ],
+      "parent": "stores",
+      "parent_columns": [
+        "store_id"
+      ]
+    },
+    {
+      "table": "delivery_jobs",
+      "name": "fk_delivery_jobs_call_id",
+      "type": "f",
+      "columns": [
+        "call_id",
+        "store_id"
+      ],
+      "parent": "group_calls",
+      "parent_columns": [
+        "call_id",
+        "store_id"
+      ]
+    },
+    {
+      "table": "delivery_jobs",
+      "name": "fk_delivery_jobs_event_id",
+      "type": "f",
+      "columns": [
+        "store_id",
+        "event_id"
+      ],
+      "parent": "queue_events",
+      "parent_columns": [
+        "store_id",
+        "event_id"
+      ]
+    },
+    {
+      "table": "delivery_jobs",
+      "name": "fk_delivery_jobs_group_id",
+      "type": "f",
+      "columns": [
+        "store_id",
+        "group_id"
+      ],
+      "parent": "queue_groups",
+      "parent_columns": [
+        "store_id",
+        "group_id"
+      ]
+    },
+    {
+      "table": "delivery_jobs",
+      "name": "fk_delivery_jobs_session_id",
+      "type": "f",
+      "columns": [
+        "store_id",
+        "session_id"
+      ],
+      "parent": "operating_sessions",
+      "parent_columns": [
+        "store_id",
+        "session_id"
+      ]
+    },
+    {
+      "table": "delivery_jobs",
+      "name": "fk_delivery_jobs_store_id",
+      "type": "f",
+      "columns": [
+        "store_id"
+      ],
+      "parent": "stores",
+      "parent_columns": [
+        "store_id"
+      ]
+    },
+    {
+      "table": "delivery_jobs",
+      "name": "fk_delivery_jobs_target_device_id",
+      "type": "f",
+      "columns": [
+        "store_id",
+        "target_device_id"
+      ],
+      "parent": "store_devices",
+      "parent_columns": [
+        "store_id",
+        "device_id"
+      ]
+    },
+    {
+      "table": "queue_groups",
+      "name": "fk_queue_groups_session_id",
+      "type": "f",
+      "columns": [
+        "store_id",
+        "session_id"
+      ],
+      "parent": "operating_sessions",
+      "parent_columns": [
+        "store_id",
+        "session_id"
+      ]
+    },
+    {
+      "table": "queue_groups",
+      "name": "fk_queue_groups_store_id",
+      "type": "f",
+      "columns": [
+        "store_id"
+      ],
+      "parent": "stores",
+      "parent_columns": [
+        "store_id"
+      ]
+    }
+  ],
+  "indexes": [
+    {
+      "table": "administrative_audit_events",
+      "name": "ix_admin_audit",
+      "columns": [
+        "organization_id",
+        "occurred_at"
+      ],
+      "unique": false,
+      "where": null
+    },
+    {
+      "table": "command_receipts",
+      "name": "ix_command_session",
+      "columns": [
+        "store_id",
+        "session_id",
+        "created_at"
+      ],
+      "unique": false,
+      "where": null
+    },
+    {
+      "table": "group_calls",
+      "name": "uq_group_open_call",
+      "columns": [
+        "store_id",
+        "group_id"
+      ],
+      "unique": true,
+      "where": "call_status = 'active'"
+    },
+    {
+      "table": "queue_events",
+      "name": "ix_event_history",
+      "columns": [
+        "store_id",
+        "recorded_at"
+      ],
+      "unique": false,
+      "where": null
+    },
+    {
+      "table": "watch_codes",
+      "name": "uq_group_watch_code",
+      "columns": [
+        "store_id",
+        "group_id"
+      ],
+      "unique": true,
+      "where": "revoked_at IS NULL"
+    },
+    {
+      "table": "watch_codes",
+      "name": "uq_live_watch_digest",
+      "columns": [
+        "code_digest"
+      ],
+      "unique": true,
+      "where": "revoked_at IS NULL"
+    },
+    {
+      "table": "operating_sessions",
+      "name": "uq_open_store_session",
+      "columns": [
+        "store_id"
+      ],
+      "unique": true,
+      "where": "closed_at IS NULL"
+    },
+    {
+      "table": "table_allocations",
+      "name": "uq_table_live_allocation",
+      "columns": [
+        "store_id",
+        "table_id"
+      ],
+      "unique": true,
+      "where": "released_at IS NULL"
+    },
+    {
+      "table": "delivery_jobs",
+      "name": "ix_delivery_due",
+      "columns": [
+        "job_status",
+        "next_attempt_at"
+      ],
+      "unique": false,
+      "where": null
+    },
+    {
+      "table": "delivery_jobs",
+      "name": "ix_delivery_lane",
+      "columns": [
+        "store_id",
+        "lane_key",
+        "event_sequence"
+      ],
+      "unique": false,
+      "where": null
+    },
+    {
+      "table": "queue_groups",
+      "name": "ix_waiting_queue",
+      "columns": [
+        "store_id",
+        "session_id",
+        "group_status",
+        "queue_sequence"
+      ],
+      "unique": false,
+      "where": null
+    },
+    {
+      "table": "api_rate_windows",
+      "name": "ix_rate_expiry",
+      "columns": [
+        "expires_at"
+      ],
+      "unique": false,
+      "where": null
+    }
+  ]
+}

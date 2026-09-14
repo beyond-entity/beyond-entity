@@ -1,0 +1,26 @@
+{
+  "date": "2026-09-11",
+  "command": "python -m pytest -q --disable-warnings --maxfail=1",
+  "result": "12 passed",
+  "elapsed_seconds": 72.02,
+  "runtime": {
+    "python": "3.10",
+    "spark": "3.5.6",
+    "delta": "3.3.2",
+    "java": "17"
+  },
+  "live_postgresql_tested": false,
+  "live_s3_tested": false,
+  "databricks_deployed": false,
+  "source_sha256": {
+    "tests/conftest.py": "e9390f0ef392928d23338aa966fa9158e30ef07161de15f4f69f3109003da431",
+    "tests/test_customer.py": "d1a8027b3c52b38a6fb84cf4732ac1d9b2a763b9dee98d01a42aaae72b9fcd79",
+    "tests/test_adapters.py": "81bacc1ec0d92ffa18a1c02935e62bca98ea3308fa6f2ee659a7537e2f6bbaeb",
+    "jobs/customers.py": "a7782601ea1a24928c8052e6ffb68e1cdc73ac255d8ad32bf15a60fdc3383022",
+    "src/lakehouse/transforms.py": "95fb4d94f428fcea14b84ede8906fa7d437ea71a6f3cffcb29cc768cfaf5bd4a",
+    "src/lakehouse/__init__.py": "a4d42b39025d8042a5f7db2c34f43e93d325a8a2362fc4a213babb9a5e01aa15",
+    "src/lakehouse/pipeline.py": "46974bd3d72030a40fe6179361efc801e47d9745957130d1545a0b26300e4864",
+    "src/lakehouse/storage.py": "3ea2c6fa166c3c51adf9b37266ea1f94982a00dad0ea77327e8487f96e3801bb",
+    "src/lakehouse/source.py": "217591352b25bc41f93d8652511604419dbf745f8b12e8b5c95b1786f901ddc8"
+  }
+}

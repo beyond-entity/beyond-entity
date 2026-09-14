@@ -1,0 +1,31 @@
+{
+  "name": "beyond-entity",
+  "owner": {
+    "name": "Beyond Entity",
+    "url": "https://beyondentity.com"
+  },
+  "description": "Beyond Entity plugins: use Beyond Entity as persistent AI architecture memory through the local MCP server.",
+  "plugins": [
+    {
+      "name": "beyond-entity-mcp",
+      "source": "./plugins/beyond-entity-mcp",
+      "description": "Use Beyond Entity as persistent AI architecture memory: recover project context, review or evolve architecture, implement code from current BE designs, and synchronize architecture after code changes through the local MCP server.",
+      "version": "0.1.0",
+      "author": {
+        "name": "Beyond Entity",
+        "url": "https://beyondentity.com"
+      },
+      "homepage": "https://beyondentity.com",
+      "category": "productivity",
+      "keywords": [
+        "beyond-entity",
+        "mcp",
+        "architecture",
+        "memory",
+        "modeling",
+        "data-contract",
+        "transformation"
+      ]
+    }
+  ]
+}

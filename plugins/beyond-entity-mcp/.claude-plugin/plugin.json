@@ -1,0 +1,17 @@
+{
+  "name": "beyond-entity-mcp",
+  "version": "0.1.0",
+  "description": "Use Beyond Entity as persistent AI architecture memory through the local MCP server.",
+  "author": {
+    "name": "Beyond Entity",
+    "url": "https://beyondentity.com"
+  },
+  "homepage": "https://beyondentity.com",
+  "keywords": [
+    "beyond-entity",
+    "mcp",
+    "architecture",
+    "memory",
+    "modeling"
+  ]
+}

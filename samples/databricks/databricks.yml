@@ -1,0 +1,385 @@
+bundle:
+  name: databricks-lakehouse-sample
+variables:
+  cluster_id:
+    description: Existing restricted UC cluster, DBR 14.3 LTS or later
+  catalog:
+    default: retail_lakehouse
+  storage_root:
+    description: Restricted s3://bucket/prefix
+  checkpoint_root:
+    description: Restricted independent Spark checkpoint root
+  secret_scope:
+    description: Runtime secret scope
+  key_version:
+    default: v1
+  approved_currencies:
+    description: JSON array of approved currency codes
+  reporting_currency:
+    description: One approved reporting currency
+  partner_id:
+    description: Authoritative partner identifier
+  model_version:
+    description: Approved model version; blank blocks ML until release
+    default: ''
+  kafka_topic:
+    description: Modeled customer event topic
+resources:
+  jobs:
+    customers:
+      name: Lakehouse Sample - Customers
+      max_concurrent_runs: 1
+      tasks:
+      - task_key: customers
+        existing_cluster_id: ${var.cluster_id}
+        max_retries: 3
+        min_retry_interval_millis: 60000
+        retry_on_timeout: true
+        notebook_task:
+          notebook_path: ./jobs/customers.py
+          base_parameters:
+            catalog: ${var.catalog}
+            storage_root: ${var.storage_root}
+            secret_scope: ${var.secret_scope}
+            batch_id: customers-{{job.run_id}}
+            key_version: ${var.key_version}
+            window_end: '{{job.start_time.iso_datetime}}'
+            scheduled_at: '{{job.trigger.time.iso_datetime}}'
+        libraries: &id001
+        - &id002
+          pypi:
+            package: boto3>=1.40,<2
+        - &id003
+          pypi:
+            package: psycopg[binary]>=3.2,<4
+      schedule:
+        quartz_cron_expression: 0 30 * * * ?
+        timezone_id: UTC
+        pause_status: PAUSED
+    commerce_source:
+      name: Lakehouse Sample - Commerce source
+      max_concurrent_runs: 1
+      tasks:
+      - task_key: commerce_source
+        existing_cluster_id: ${var.cluster_id}
+        max_retries: 3
+        min_retry_interval_millis: 60000
+        retry_on_timeout: true
+        notebook_task:
+          notebook_path: ./jobs/batch.py
+          base_parameters:
+            catalog: ${var.catalog}
+            storage_root: ${var.storage_root}
+            secret_scope: ${var.secret_scope}
+            mode: source
+            run_id: source-{{job.run_id}}
+            window_end: '{{job.start_time.iso_datetime}}'
+            scheduled_at: '{{job.trigger.time.iso_datetime}}'
+        libraries: *id001
+      schedule:
+        quartz_cron_expression: 0 0/15 * * * ?
+        timezone_id: UTC
+        pause_status: PAUSED
+    events_bronze:
+      name: Lakehouse Sample - Events bronze
+      max_concurrent_runs: 1
+      tasks:
+      - task_key: bronze
+        existing_cluster_id: ${var.cluster_id}
+        max_retries: 3
+        min_retry_interval_millis: 60000
+        retry_on_timeout: true
+        notebook_task:
+          notebook_path: ./jobs/events.py
+          base_parameters:
+            catalog: ${var.catalog}
+            storage_root: ${var.storage_root}
+            secret_scope: ${var.secret_scope}
+            mode: bronze
+            run_id: events-bronze-{{job.run_id}}
+            checkpoint_root: ${var.checkpoint_root}
+        libraries: *id001
+      continuous:
+        pause_status: PAUSED
+    events_silver:
+      name: Lakehouse Sample - Events silver
+      max_concurrent_runs: 1
+      tasks:
+      - task_key: silver
+        existing_cluster_id: ${var.cluster_id}
+        max_retries: 3
+        min_retry_interval_millis: 60000
+        retry_on_timeout: true
+        notebook_task:
+          notebook_path: ./jobs/events.py
+          base_parameters:
+            catalog: ${var.catalog}
+            storage_root: ${var.storage_root}
+            secret_scope: ${var.secret_scope}
+            mode: silver
+            run_id: events-silver-{{job.run_id}}
+            checkpoint_root: ${var.checkpoint_root}
+        libraries: *id001
+      continuous:
+        pause_status: PAUSED
+    partner_delivery:
+      name: Lakehouse Sample - Partner delivery
+      max_concurrent_runs: 1
+      tasks:
+      - task_key: partner
+        existing_cluster_id: ${var.cluster_id}
+        max_retries: 3
+        min_retry_interval_millis: 60000
+        retry_on_timeout: true
+        notebook_task:
+          notebook_path: ./jobs/batch.py
+          base_parameters:
+            catalog: ${var.catalog}
+            storage_root: ${var.storage_root}
+            secret_scope: ${var.secret_scope}
+            mode: partner
+            run_id: partner-{{job.run_id}}
+            window_end: '{{job.start_time.iso_datetime}}'
+            partner_id: ${var.partner_id}
+            partner_object_key: '{{job.parameters.partner_object_key}}'
+            partner_sha256: '{{job.parameters.partner_sha256}}'
+        libraries: *id001
+      parameters:
+      - name: partner_object_key
+        default: ''
+      - name: partner_sha256
+        default: ''
+    daily_refresh:
+      name: Lakehouse Sample - Daily refresh
+      max_concurrent_runs: 1
+      tasks:
+      - task_key: silver
+        existing_cluster_id: ${var.cluster_id}
+        max_retries: 3
+        min_retry_interval_millis: 60000
+        retry_on_timeout: true
+        notebook_task:
+          notebook_path: ./jobs/batch.py
+          base_parameters:
+            catalog: ${var.catalog}
+            storage_root: ${var.storage_root}
+            secret_scope: ${var.secret_scope}
+            mode: silver
+            run_id: silver-{{job.run_id}}
+            window_end: '{{job.start_time.iso_datetime}}'
+            approved_currencies: ${var.approved_currencies}
+            partner_id: ${var.partner_id}
+        libraries: *id001
+      - task_key: reconcile_events
+        existing_cluster_id: ${var.cluster_id}
+        max_retries: 3
+        min_retry_interval_millis: 60000
+        retry_on_timeout: true
+        notebook_task:
+          notebook_path: ./jobs/events.py
+          base_parameters:
+            catalog: ${var.catalog}
+            storage_root: ${var.storage_root}
+            secret_scope: ${var.secret_scope}
+            mode: replay
+            run_id: replay-{{job.run_id}}
+            checkpoint_root: ${var.checkpoint_root}
+        libraries: *id001
+        depends_on:
+        - task_key: silver
+      - task_key: gold
+        existing_cluster_id: ${var.cluster_id}
+        max_retries: 3
+        min_retry_interval_millis: 60000
+        retry_on_timeout: true
+        notebook_task:
+          notebook_path: ./jobs/refresh.py
+          base_parameters:
+            catalog: ${var.catalog}
+            storage_root: ${var.storage_root}
+            secret_scope: ${var.secret_scope}
+            as_of_date: '{{job.start_time.iso_date}}'
+            window_end: '{{job.start_time.iso_datetime}}'
+            reporting_currency: ${var.reporting_currency}
+            approved_currencies: ${var.approved_currencies}
+            model_version: ${var.model_version}
+            mode: gold
+            run_id: gold-{{job.run_id}}
+        libraries: *id001
+        depends_on:
+        - task_key: silver
+        - task_key: reconcile_events
+      - task_key: ml
+        existing_cluster_id: ${var.cluster_id}
+        max_retries: 3
+        min_retry_interval_millis: 60000
+        retry_on_timeout: true
+        notebook_task:
+          notebook_path: ./jobs/refresh.py
+          base_parameters:
+            catalog: ${var.catalog}
+            storage_root: ${var.storage_root}
+            secret_scope: ${var.secret_scope}
+            as_of_date: '{{job.start_time.iso_date}}'
+            window_end: '{{job.start_time.iso_datetime}}'
+            reporting_currency: ${var.reporting_currency}
+            approved_currencies: ${var.approved_currencies}
+            model_version: ${var.model_version}
+            mode: ml
+            run_id: ml-{{job.run_id}}
+        libraries: *id001
+        depends_on:
+        - task_key: gold
+      - task_key: activation
+        existing_cluster_id: ${var.cluster_id}
+        max_retries: 3
+        min_retry_interval_millis: 60000
+        retry_on_timeout: true
+        notebook_task:
+          notebook_path: ./jobs/refresh.py
+          base_parameters:
+            catalog: ${var.catalog}
+            storage_root: ${var.storage_root}
+            secret_scope: ${var.secret_scope}
+            as_of_date: '{{job.start_time.iso_date}}'
+            window_end: '{{job.start_time.iso_datetime}}'
+            reporting_currency: ${var.reporting_currency}
+            approved_currencies: ${var.approved_currencies}
+            model_version: ${var.model_version}
+            mode: activation
+            run_id: activation-{{job.run_id}}
+        libraries: *id001
+        depends_on:
+        - task_key: ml
+      - task_key: report
+        existing_cluster_id: ${var.cluster_id}
+        max_retries: 3
+        min_retry_interval_millis: 60000
+        retry_on_timeout: true
+        notebook_task:
+          notebook_path: ./jobs/refresh.py
+          base_parameters:
+            catalog: ${var.catalog}
+            storage_root: ${var.storage_root}
+            secret_scope: ${var.secret_scope}
+            as_of_date: '{{job.start_time.iso_date}}'
+            window_end: '{{job.start_time.iso_datetime}}'
+            reporting_currency: ${var.reporting_currency}
+            approved_currencies: ${var.approved_currencies}
+            model_version: ${var.model_version}
+            mode: report
+            run_id: report-{{job.run_id}}
+        libraries: *id001
+        depends_on:
+        - task_key: gold
+      schedule:
+        quartz_cron_expression: 0 0 3 * * ?
+        timezone_id: UTC
+        pause_status: PAUSED
+    live_activity:
+      name: Lakehouse Sample - Live activity
+      max_concurrent_runs: 1
+      tasks:
+      - task_key: activity
+        existing_cluster_id: ${var.cluster_id}
+        max_retries: 3
+        min_retry_interval_millis: 60000
+        retry_on_timeout: true
+        notebook_task:
+          notebook_path: ./jobs/refresh.py
+          base_parameters:
+            catalog: ${var.catalog}
+            storage_root: ${var.storage_root}
+            secret_scope: ${var.secret_scope}
+            as_of_date: '{{job.start_time.iso_date}}'
+            window_end: '{{job.start_time.iso_datetime}}'
+            reporting_currency: ${var.reporting_currency}
+            approved_currencies: ${var.approved_currencies}
+            model_version: ${var.model_version}
+            mode: activity
+            run_id: activity-{{job.run_id}}
+        libraries: *id001
+      schedule:
+        quartz_cron_expression: 0 10 * * * ?
+        timezone_id: UTC
+        pause_status: PAUSED
+    activation_refresh:
+      name: Lakehouse Sample - Consent refresh
+      max_concurrent_runs: 1
+      tasks:
+      - task_key: activation
+        existing_cluster_id: ${var.cluster_id}
+        max_retries: 3
+        min_retry_interval_millis: 60000
+        retry_on_timeout: true
+        notebook_task:
+          notebook_path: ./jobs/refresh.py
+          base_parameters:
+            catalog: ${var.catalog}
+            storage_root: ${var.storage_root}
+            secret_scope: ${var.secret_scope}
+            as_of_date: '{{job.start_time.iso_date}}'
+            window_end: '{{job.start_time.iso_datetime}}'
+            reporting_currency: ${var.reporting_currency}
+            approved_currencies: ${var.approved_currencies}
+            model_version: ${var.model_version}
+            mode: activation
+            run_id: consent-{{job.run_id}}
+        libraries: *id001
+      schedule:
+        quartz_cron_expression: 0 40 * * * ?
+        timezone_id: UTC
+        pause_status: PAUSED
+    model_release:
+      name: Lakehouse Sample - Model release
+      max_concurrent_runs: 1
+      tasks:
+      - task_key: register_model
+        existing_cluster_id: ${var.cluster_id}
+        max_retries: 3
+        min_retry_interval_millis: 60000
+        retry_on_timeout: true
+        notebook_task:
+          notebook_path: ./jobs/register_model.py
+          base_parameters:
+            catalog: ${var.catalog}
+            storage_root: ${var.storage_root}
+            secret_scope: ${var.secret_scope}
+            artifact_object_key: '{{job.parameters.artifact_object_key}}'
+        libraries: *id001
+      parameters:
+      - name: artifact_object_key
+        default: ''
+    outbox_relay:
+      name: Lakehouse Sample - Outbox relay
+      max_concurrent_runs: 1
+      tasks:
+      - task_key: outbox
+        existing_cluster_id: ${var.cluster_id}
+        max_retries: 3
+        min_retry_interval_millis: 60000
+        retry_on_timeout: true
+        notebook_task:
+          notebook_path: ./jobs/outbox.py
+          base_parameters:
+            catalog: ${var.catalog}
+            storage_root: ${var.storage_root}
+            secret_scope: ${var.secret_scope}
+            kafka_topic: ${var.kafka_topic}
+        libraries:
+        - *id002
+        - *id003
+        - pypi:
+            package: confluent-kafka>=2.6,<3
+      schedule:
+        quartz_cron_expression: 0 * * * * ?
+        timezone_id: UTC
+        pause_status: PAUSED
+sync:
+  include:
+  - src/**
+  exclude:
+  - '*.bemdl'
+  - '*.betmp*'
+  - tests/**
+  - .venv/**

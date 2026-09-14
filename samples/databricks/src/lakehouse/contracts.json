@@ -1,0 +1,2683 @@
+{
+  "project_id": "PqcaRKCiWKiVB",
+  "processors": {
+    "sync_customers": {
+      "id": "proc_tLb4Vvc4IN",
+      "module": "sync_customers",
+      "sql": [
+        "SELECT CAST(s.customer_id AS TEXT) AS customer_id, CAST(s.full_name AS TEXT) AS full_name, CAST(s.email AS TEXT) AS email, CAST(s.phone AS TEXT) AS phone, CAST(s.address AS TEXT) AS address, CAST(s.country_code AS TEXT) AS country_code, CAST(s.marketing_consent AS TEXT) AS marketing_consent, CAST(s.created_at AS TEXT) AS created_at, CAST(s.updated_at AS TEXT) AS updated_at, CAST(s.is_deleted AS TEXT) AS is_deleted, :source_file AS source_file, :batch_id AS batch_id, CAST(CURRENT_TIMESTAMP AS TEXT) AS extracted_at FROM customers s WHERE (:full_snapshot = TRUE OR s.updated_at >= CAST(:window_start AS TIMESTAMP) - INTERVAL '5 minutes') AND s.updated_at < CAST(:window_end AS TIMESTAMP)",
+        "INSERT INTO landing_customers (customer_id, full_name, email, phone, address, country_code, marketing_consent, created_at, updated_at, is_deleted, source_file, batch_id, extracted_at) SELECT p.customer_id, p.full_name, p.email, p.phone, p.address, p.country_code, p.marketing_consent, p.created_at, p.updated_at, p.is_deleted, p.source_file, p.batch_id, p.extracted_at FROM sync_customers p"
+      ]
+    },
+    "sync_orders": {
+      "id": "proc_l6hhYLa792",
+      "module": "sync_orders",
+      "sql": [
+        "SELECT CAST(s.order_id AS TEXT) AS order_id, CAST(s.customer_id AS TEXT) AS customer_id, CAST(s.order_status AS TEXT) AS order_status, CAST(s.ordered_at AS TEXT) AS ordered_at, CAST(s.currency AS TEXT) AS currency, CAST(s.updated_at AS TEXT) AS updated_at, CAST(s.is_deleted AS TEXT) AS is_deleted, :source_file AS source_file, :batch_id AS batch_id, CAST(CURRENT_TIMESTAMP AS TEXT) AS extracted_at FROM orders s WHERE (:full_snapshot = TRUE OR s.updated_at >= CAST(:window_start AS TIMESTAMP) - INTERVAL '5 minutes') AND s.updated_at < CAST(:window_end AS TIMESTAMP)",
+        "INSERT INTO landing_orders (order_id, customer_id, order_status, ordered_at, currency, updated_at, is_deleted, source_file, batch_id, extracted_at) SELECT p.order_id, p.customer_id, p.order_status, p.ordered_at, p.currency, p.updated_at, p.is_deleted, p.source_file, p.batch_id, p.extracted_at FROM sync_orders p"
+      ]
+    },
+    "sync_order_items": {
+      "id": "proc_O4QuAZheX5",
+      "module": "sync_order_items",
+      "sql": [
+        "SELECT CAST(s.order_item_id AS TEXT) AS order_item_id, CAST(s.order_id AS TEXT) AS order_id, CAST(s.product_id AS TEXT) AS product_id, CAST(s.quantity AS TEXT) AS quantity, CAST(s.unit_price AS TEXT) AS unit_price, CAST(s.updated_at AS TEXT) AS updated_at, CAST(s.is_deleted AS TEXT) AS is_deleted, :source_file AS source_file, :batch_id AS batch_id, CAST(CURRENT_TIMESTAMP AS TEXT) AS extracted_at FROM order_items s WHERE (:full_snapshot = TRUE OR s.updated_at >= CAST(:window_start AS TIMESTAMP) - INTERVAL '5 minutes') AND s.updated_at < CAST(:window_end AS TIMESTAMP)",
+        "INSERT INTO landing_order_items (order_item_id, order_id, product_id, quantity, unit_price, updated_at, is_deleted, source_file, batch_id, extracted_at) SELECT p.order_item_id, p.order_id, p.product_id, p.quantity, p.unit_price, p.updated_at, p.is_deleted, p.source_file, p.batch_id, p.extracted_at FROM sync_order_items p"
+      ]
+    },
+    "sync_products": {
+      "id": "proc_myHDLtCBL3",
+      "module": "sync_products",
+      "sql": [
+        "SELECT CAST(s.product_id AS TEXT) AS product_id, CAST(s.product_code AS TEXT) AS product_code, CAST(s.product_name AS TEXT) AS product_name, CAST(s.category AS TEXT) AS category, CAST(s.list_price AS TEXT) AS list_price, CAST(s.currency AS TEXT) AS currency, CAST(s.updated_at AS TEXT) AS updated_at, CAST(s.is_deleted AS TEXT) AS is_deleted, :source_file AS source_file, :batch_id AS batch_id, CAST(CURRENT_TIMESTAMP AS TEXT) AS extracted_at FROM products s WHERE (:full_snapshot = TRUE OR s.updated_at >= CAST(:window_start AS TIMESTAMP) - INTERVAL '5 minutes') AND s.updated_at < CAST(:window_end AS TIMESTAMP)",
+        "INSERT INTO landing_products (product_id, product_code, product_name, category, list_price, currency, updated_at, is_deleted, source_file, batch_id, extracted_at) SELECT p.product_id, p.product_code, p.product_name, p.category, p.list_price, p.currency, p.updated_at, p.is_deleted, p.source_file, p.batch_id, p.extracted_at FROM sync_products p"
+      ]
+    },
+    "partner_receive": {
+      "id": "proc_cIt9it4kMm",
+      "module": "receive_partner_products",
+      "sql": [
+        "SELECT f.partner_id AS partner_id, f.product_code AS product_code, f.brand AS brand, f.supplier_region AS supplier_region, f.effective_date AS effective_date, f.file_checksum AS file_checksum, :source_file AS source_file, :batch_id AS batch_id, CAST(CURRENT_TIMESTAMP AS STRING) AS extracted_at FROM partner_product_feed f",
+        "INSERT INTO landing_partner_products (partner_id, product_code, brand, supplier_region, effective_date, file_checksum, source_file, batch_id, extracted_at) SELECT p.partner_id, p.product_code, p.brand, p.supplier_region, p.effective_date, p.file_checksum, p.source_file, p.batch_id, p.extracted_at FROM receive_partner_products p"
+      ]
+    },
+    "bronze_ingest": {
+      "id": "proc_fM15NUfRm4",
+      "module": "ingest_landing_to_bronze",
+      "sql": [
+        "INSERT INTO raw_customers (customer_id, full_name, email, phone, address, country_code, marketing_consent, created_at, updated_at, is_deleted, source_file, batch_id, ingested_at) SELECT s.customer_id AS customer_id, s.full_name AS full_name, s.email AS email, s.phone AS phone, s.address AS address, s.country_code AS country_code, s.marketing_consent AS marketing_consent, s.created_at AS created_at, s.updated_at AS updated_at, s.is_deleted AS is_deleted, s.source_file AS source_file, s.batch_id AS batch_id, CURRENT_TIMESTAMP AS ingested_at FROM landing_customers s WHERE s.batch_id = :batch_id",
+        "INSERT INTO raw_orders (order_id, customer_id, order_status, ordered_at, currency, updated_at, is_deleted, source_file, batch_id, ingested_at) SELECT s.order_id AS order_id, s.customer_id AS customer_id, s.order_status AS order_status, s.ordered_at AS ordered_at, s.currency AS currency, s.updated_at AS updated_at, s.is_deleted AS is_deleted, s.source_file AS source_file, s.batch_id AS batch_id, CURRENT_TIMESTAMP AS ingested_at FROM landing_orders s WHERE s.batch_id = :batch_id",
+        "INSERT INTO raw_order_items (order_item_id, order_id, product_id, quantity, unit_price, updated_at, is_deleted, source_file, batch_id, ingested_at) SELECT s.order_item_id AS order_item_id, s.order_id AS order_id, s.product_id AS product_id, s.quantity AS quantity, s.unit_price AS unit_price, s.updated_at AS updated_at, s.is_deleted AS is_deleted, s.source_file AS source_file, s.batch_id AS batch_id, CURRENT_TIMESTAMP AS ingested_at FROM landing_order_items s WHERE s.batch_id = :batch_id",
+        "INSERT INTO raw_products (product_id, product_code, product_name, category, list_price, currency, updated_at, is_deleted, source_file, batch_id, ingested_at) SELECT s.product_id AS product_id, s.product_code AS product_code, s.product_name AS product_name, s.category AS category, s.list_price AS list_price, s.currency AS currency, s.updated_at AS updated_at, s.is_deleted AS is_deleted, s.source_file AS source_file, s.batch_id AS batch_id, CURRENT_TIMESTAMP AS ingested_at FROM landing_products s WHERE s.batch_id = :batch_id",
+        "INSERT INTO raw_partner_products (partner_id, product_code, brand, supplier_region, effective_date, file_checksum, source_file, batch_id, ingested_at) SELECT s.partner_id AS partner_id, s.product_code AS product_code, s.brand AS brand, s.supplier_region AS supplier_region, s.effective_date AS effective_date, s.file_checksum AS file_checksum, s.source_file AS source_file, s.batch_id AS batch_id, CURRENT_TIMESTAMP AS ingested_at FROM landing_partner_products s WHERE s.batch_id = :batch_id"
+      ]
+    },
+    "stream_ingest": {
+      "id": "proc_OiRRHIXDqQ",
+      "module": "stream_kafka_to_bronze",
+      "sql": [
+        "INSERT INTO raw_customer_events (event_id, event_type, customer_id, session_id, product_id, order_id, event_time, schema_version, kafka_topic, kafka_partition, kafka_offset, ingested_at) SELECT e.event_id AS event_id, e.event_type AS event_type, e.customer_id AS customer_id, e.session_id AS session_id, e.product_id AS product_id, e.order_id AS order_id, e.event_time AS event_time, e.schema_version AS schema_version, e.kafka_topic AS kafka_topic, e.kafka_partition AS kafka_partition, e.kafka_offset AS kafka_offset, CURRENT_TIMESTAMP AS ingested_at FROM customer_events e"
+      ]
+    },
+    "normalize_customers": {
+      "id": "proc_iV9fZ5QRIe",
+      "module": "normalize_customers",
+      "sql": [
+        "SELECT r.customer_id AS src_customer_id, r.full_name AS src_full_name, r.email AS src_email, r.phone AS src_phone, r.address AS src_address, r.country_code AS src_country_code, r.marketing_consent AS src_marketing_consent, r.created_at AS src_created_at, r.updated_at AS src_updated_at, r.is_deleted AS src_is_deleted, r.source_file AS src_source_file, r.batch_id AS src_batch_id, r.ingested_at AS src_ingested_at, ROW_NUMBER() OVER (PARTITION BY r.customer_id ORDER BY TRY_CAST(r.updated_at AS TIMESTAMP) DESC, r.ingested_at DESC, r.batch_id DESC) AS src_row_rank FROM raw_customers r",
+        "SELECT TRY_CAST(p.src_customer_id AS BIGINT) AS customer_id, TRIM(p.src_full_name) AS full_name, LOWER(TRIM(p.src_email)) AS email_norm, REGEXP_REPLACE(p.src_phone, '[^0-9]', '') AS phone_norm, TRIM(p.src_address) AS address, UPPER(TRIM(p.src_country_code)) AS country_code, COALESCE(TRY_CAST(p.src_marketing_consent AS BOOLEAN), FALSE) AS marketing_consent, TRY_CAST(p.src_created_at AS TIMESTAMP) AS created_at, TRY_CAST(p.src_updated_at AS TIMESTAMP) AS updated_at FROM normalize_customers p WHERE p.src_row_rank = 1 AND TRY_CAST(p.src_is_deleted AS BOOLEAN) = FALSE AND TRY_CAST(p.src_customer_id AS BIGINT) IS NOT NULL AND TRY_CAST(p.src_updated_at AS TIMESTAMP) IS NOT NULL AND TRY_CAST(p.src_created_at AS TIMESTAMP) IS NOT NULL AND p.src_email LIKE '%@%'",
+        "INSERT INTO normalized_customers (customer_id, full_name, email_norm, phone_norm, address, country_code, marketing_consent, created_at, updated_at) SELECT p.customer_id, p.full_name, p.email_norm, p.phone_norm, p.address, p.country_code, p.marketing_consent, p.created_at, p.updated_at FROM normalize_customers p"
+      ]
+    },
+    "mask_customers": {
+      "id": "proc_VOPDc38HLm",
+      "module": "pseudonymize_customers",
+      "sql": [
+        "SELECT c.customer_id AS customer_id, SHA2(CONCAT(:identity_pepper, ':', CAST(c.customer_id AS STRING)), 256) AS customer_key, SHA2(CONCAT(:email_pepper, ':', c.email_norm), 256) AS email_hash, c.country_code AS country_code, c.marketing_consent AS marketing_consent, c.created_at AS created_at, c.updated_at AS updated_at FROM normalized_customers c",
+        "INSERT INTO customer_identity_map (customer_id, customer_key, key_version, updated_at) SELECT p.customer_id, p.customer_key, :key_version, p.updated_at FROM pseudonymize_customers p",
+        "INSERT INTO silver_customers (customer_key, email_hash, country_code, marketing_consent, created_at, updated_at) SELECT p.customer_key, p.email_hash, p.country_code, p.marketing_consent, p.created_at, p.updated_at FROM pseudonymize_customers p"
+      ]
+    },
+    "clean_orders": {
+      "id": "proc_5gh3GHrz95",
+      "module": "clean_orders",
+      "sql": [
+        "SELECT r.order_id AS src_order_id, r.customer_id AS src_customer_id, r.order_status AS src_order_status, r.ordered_at AS src_ordered_at, r.currency AS src_currency, r.updated_at AS src_updated_at, r.is_deleted AS src_is_deleted, r.source_file AS src_source_file, r.batch_id AS src_batch_id, r.ingested_at AS src_ingested_at, ROW_NUMBER() OVER (PARTITION BY r.order_id ORDER BY TRY_CAST(r.updated_at AS TIMESTAMP) DESC, r.ingested_at DESC, r.batch_id DESC) AS src_row_rank FROM raw_orders r",
+        "SELECT TRY_CAST(p.src_order_id AS BIGINT) AS order_id, m.customer_key AS customer_key, LOWER(TRIM(p.src_order_status)) AS order_status, TRY_CAST(p.src_ordered_at AS TIMESTAMP) AS ordered_at, UPPER(TRIM(p.src_currency)) AS currency, TRY_CAST(p.src_updated_at AS TIMESTAMP) AS updated_at FROM clean_orders p JOIN customer_identity_map m ON TRY_CAST(p.src_customer_id AS BIGINT) = m.customer_id WHERE p.src_row_rank = 1 AND TRY_CAST(p.src_is_deleted AS BOOLEAN) = FALSE AND TRY_CAST(p.src_order_id AS BIGINT) IS NOT NULL AND TRY_CAST(p.src_ordered_at AS TIMESTAMP) IS NOT NULL AND TRY_CAST(p.src_updated_at AS TIMESTAMP) IS NOT NULL AND LOWER(TRIM(p.src_order_status)) IN ('created','paid','completed','cancelled') AND LENGTH(TRIM(p.src_currency)) = 3",
+        "INSERT INTO silver_orders (order_id, customer_key, order_status, ordered_at, currency, updated_at) SELECT p.order_id, p.customer_key, p.order_status, p.ordered_at, p.currency, p.updated_at FROM clean_orders p"
+      ]
+    },
+    "clean_products": {
+      "id": "proc_Bw43kNAJLO",
+      "module": "clean_products",
+      "sql": [
+        "SELECT r.product_id AS src_product_id, r.product_code AS src_product_code, r.product_name AS src_product_name, r.category AS src_category, r.list_price AS src_list_price, r.currency AS src_currency, r.updated_at AS src_updated_at, r.is_deleted AS src_is_deleted, r.source_file AS src_source_file, r.batch_id AS src_batch_id, r.ingested_at AS src_ingested_at, ROW_NUMBER() OVER (PARTITION BY r.product_id ORDER BY TRY_CAST(r.updated_at AS TIMESTAMP) DESC, r.ingested_at DESC, r.batch_id DESC) AS src_row_rank FROM raw_products r",
+        "SELECT TRY_CAST(p.src_product_id AS BIGINT) AS product_id, UPPER(TRIM(p.src_product_code)) AS product_code, TRIM(p.src_product_name) AS product_name, LOWER(TRIM(p.src_category)) AS category, TRY_CAST(p.src_list_price AS DECIMAL(18,2)) AS list_price, UPPER(TRIM(p.src_currency)) AS currency, TRY_CAST(p.src_updated_at AS TIMESTAMP) AS updated_at FROM clean_products p WHERE p.src_row_rank = 1 AND TRY_CAST(p.src_is_deleted AS BOOLEAN) = FALSE AND TRY_CAST(p.src_product_id AS BIGINT) IS NOT NULL AND TRY_CAST(p.src_list_price AS DECIMAL(18,2)) >= 0 AND TRY_CAST(p.src_updated_at AS TIMESTAMP) IS NOT NULL AND LENGTH(TRIM(p.src_product_code)) > 0 AND LENGTH(TRIM(p.src_currency)) = 3",
+        "INSERT INTO silver_products (product_id, product_code, product_name, category, list_price, currency, updated_at) SELECT p.product_id, p.product_code, p.product_name, p.category, p.list_price, p.currency, p.updated_at FROM clean_products p"
+      ]
+    },
+    "clean_items": {
+      "id": "proc_Yqr7ZuRs9W",
+      "module": "clean_items",
+      "sql": [
+        "SELECT r.order_item_id AS src_order_item_id, r.order_id AS src_order_id, r.product_id AS src_product_id, r.quantity AS src_quantity, r.unit_price AS src_unit_price, r.updated_at AS src_updated_at, r.is_deleted AS src_is_deleted, r.source_file AS src_source_file, r.batch_id AS src_batch_id, r.ingested_at AS src_ingested_at, ROW_NUMBER() OVER (PARTITION BY r.order_item_id ORDER BY TRY_CAST(r.updated_at AS TIMESTAMP) DESC, r.ingested_at DESC, r.batch_id DESC) AS src_row_rank FROM raw_order_items r",
+        "SELECT TRY_CAST(p.src_order_item_id AS BIGINT) AS order_item_id, o.order_id AS order_id, c.product_id AS product_id, TRY_CAST(p.src_quantity AS INT) AS quantity, TRY_CAST(p.src_unit_price AS DECIMAL(18,2)) AS unit_price, TRY_CAST(p.src_quantity AS INT) * TRY_CAST(p.src_unit_price AS DECIMAL(18,2)) AS line_amount, TRY_CAST(p.src_updated_at AS TIMESTAMP) AS updated_at FROM clean_items p JOIN silver_orders o ON TRY_CAST(p.src_order_id AS BIGINT) = o.order_id JOIN silver_products c ON TRY_CAST(p.src_product_id AS BIGINT) = c.product_id WHERE p.src_row_rank = 1 AND TRY_CAST(p.src_is_deleted AS BOOLEAN) = FALSE AND TRY_CAST(p.src_order_item_id AS BIGINT) IS NOT NULL AND TRY_CAST(p.src_quantity AS INT) > 0 AND TRY_CAST(p.src_unit_price AS DECIMAL(18,2)) >= 0 AND TRY_CAST(p.src_updated_at AS TIMESTAMP) IS NOT NULL",
+        "INSERT INTO silver_order_items (order_item_id, order_id, product_id, quantity, unit_price, line_amount, updated_at) SELECT p.order_item_id, p.order_id, p.product_id, p.quantity, p.unit_price, p.line_amount, p.updated_at FROM clean_items p"
+      ]
+    },
+    "clean_partner": {
+      "id": "proc_4bl6mv4kjN",
+      "module": "clean_partner_products",
+      "sql": [
+        "SELECT r.partner_id AS src_partner_id, r.product_code AS src_product_code, r.brand AS src_brand, r.supplier_region AS src_supplier_region, r.effective_date AS src_effective_date, r.file_checksum AS src_file_checksum, r.source_file AS src_source_file, r.batch_id AS src_batch_id, r.ingested_at AS src_ingested_at, ROW_NUMBER() OVER (PARTITION BY UPPER(TRIM(r.product_code)) ORDER BY TRY_CAST(r.effective_date AS DATE) DESC, r.file_checksum DESC) AS src_row_rank FROM raw_partner_products r WHERE r.partner_id = :authoritative_partner_id",
+        "SELECT UPPER(TRIM(p.src_product_code)) AS product_code, p.src_partner_id AS partner_id, TRIM(p.src_brand) AS brand, UPPER(TRIM(p.src_supplier_region)) AS supplier_region, TRY_CAST(p.src_effective_date AS DATE) AS effective_date FROM clean_partner_products p WHERE p.src_row_rank = 1 AND TRY_CAST(p.src_effective_date AS DATE) IS NOT NULL AND LENGTH(TRIM(p.src_product_code)) > 0",
+        "INSERT INTO silver_partner_products (product_code, partner_id, brand, supplier_region, effective_date) SELECT p.product_code, p.partner_id, p.brand, p.supplier_region, p.effective_date FROM clean_partner_products p"
+      ]
+    },
+    "enrich_products": {
+      "id": "proc_GVyXMdEKUc",
+      "module": "enrich_product_catalog",
+      "sql": [
+        "SELECT p.product_id AS product_id, p.product_code AS product_code, p.product_name AS product_name, p.category AS category, e.brand AS brand, e.supplier_region AS supplier_region FROM silver_products p LEFT JOIN silver_partner_products e ON p.product_code = e.product_code",
+        "INSERT INTO enriched_products (product_id, product_code, product_name, category, brand, supplier_region) SELECT p.product_id, p.product_code, p.product_name, p.category, p.brand, p.supplier_region FROM enrich_product_catalog p"
+      ]
+    },
+    "clean_events": {
+      "id": "proc_eIaNup3Rc6",
+      "module": "clean_streaming_events",
+      "sql": [
+        "SELECT r.event_id AS src_event_id, r.event_type AS src_event_type, r.customer_id AS src_customer_id, r.session_id AS src_session_id, r.product_id AS src_product_id, r.order_id AS src_order_id, r.event_time AS src_event_time, r.schema_version AS src_schema_version, r.kafka_topic AS src_kafka_topic, r.kafka_partition AS src_kafka_partition, r.kafka_offset AS src_kafka_offset, r.ingested_at AS src_ingested_at, ROW_NUMBER() OVER (PARTITION BY r.event_id ORDER BY r.ingested_at, r.kafka_partition, r.kafka_offset) AS src_row_rank FROM raw_customer_events r",
+        "SELECT p.src_event_id AS event_id, p.src_event_type AS event_type, m.customer_key AS customer_key, p.src_session_id AS session_id, TRY_CAST(p.src_product_id AS BIGINT) AS product_id, TRY_CAST(p.src_order_id AS BIGINT) AS order_id, TRY_CAST(p.src_event_time AS TIMESTAMP) AS event_time, CAST(TRY_CAST(p.src_event_time AS TIMESTAMP) AS DATE) AS event_date FROM clean_streaming_events p JOIN customer_identity_map m ON TRY_CAST(p.src_customer_id AS BIGINT) = m.customer_id WHERE p.src_row_rank = 1 AND p.src_event_id IS NOT NULL AND p.src_event_type IN ('product_viewed','product_added_to_cart','order_created','order_cancelled') AND p.src_schema_version = '1' AND TRY_CAST(p.src_event_time AS TIMESTAMP) IS NOT NULL AND LENGTH(TRIM(p.src_event_id)) > 0 AND TRY_CAST(p.src_event_time AS TIMESTAMP) <= p.src_ingested_at + INTERVAL 5 MINUTES AND ((p.src_event_type IN ('product_viewed','product_added_to_cart') AND LENGTH(TRIM(p.src_session_id)) > 0 AND TRY_CAST(p.src_product_id AS BIGINT) IS NOT NULL) OR (p.src_event_type IN ('order_created','order_cancelled') AND TRY_CAST(p.src_order_id AS BIGINT) IS NOT NULL))",
+        "INSERT INTO silver_customer_events (event_id, event_type, customer_key, session_id, product_id, order_id, event_time, event_date) SELECT p.event_id, p.event_type, p.customer_key, p.session_id, p.product_id, p.order_id, p.event_time, p.event_date FROM clean_streaming_events p"
+      ]
+    },
+    "quarantine": {
+      "id": "proc_xPJZ3R43Lt",
+      "module": "quarantine_invalid_records",
+      "sql": [
+        "INSERT INTO quality_quarantine (reject_id, source_table, source_record_id, batch_id, reason_code, source_file, detected_at) SELECT SHA2(CONCAT(COALESCE(r.customer_id, 'null'), ':', r.batch_id, ':', r.source_file), 256), 'raw_customers', r.customer_id, r.batch_id, 'INVALID_CUSTOMER', r.source_file, CURRENT_TIMESTAMP FROM raw_customers r WHERE TRY_CAST(r.customer_id AS BIGINT) IS NULL OR TRY_CAST(r.updated_at AS TIMESTAMP) IS NULL OR TRY_CAST(r.is_deleted AS BOOLEAN) IS NULL OR (TRY_CAST(r.is_deleted AS BOOLEAN) = FALSE AND (r.email IS NULL OR r.email NOT LIKE '%@%' OR TRY_CAST(r.created_at AS TIMESTAMP) IS NULL))",
+        "INSERT INTO quality_quarantine (reject_id, source_table, source_record_id, batch_id, reason_code, source_file, detected_at) SELECT SHA2(CONCAT(COALESCE(r.order_id, 'null'), ':', r.batch_id, ':', r.source_file), 256), 'raw_orders', r.order_id, r.batch_id, 'INVALID_ORDER', r.source_file, CURRENT_TIMESTAMP FROM raw_orders r WHERE TRY_CAST(r.order_id AS BIGINT) IS NULL OR TRY_CAST(r.ordered_at AS TIMESTAMP) IS NULL OR TRY_CAST(r.updated_at AS TIMESTAMP) IS NULL OR TRY_CAST(r.is_deleted AS BOOLEAN) IS NULL OR r.order_status IS NULL OR LOWER(TRIM(r.order_status)) NOT IN ('created','paid','completed','cancelled') OR r.currency IS NULL OR LENGTH(TRIM(r.currency)) <> 3",
+        "INSERT INTO quality_quarantine (reject_id, source_table, source_record_id, batch_id, reason_code, source_file, detected_at) SELECT SHA2(CONCAT(COALESCE(r.order_item_id, 'null'), ':', r.batch_id, ':', r.source_file), 256), 'raw_order_items', r.order_item_id, r.batch_id, 'INVALID_ORDER_ITEM', r.source_file, CURRENT_TIMESTAMP FROM raw_order_items r WHERE TRY_CAST(r.order_item_id AS BIGINT) IS NULL OR TRY_CAST(r.quantity AS INT) IS NULL OR TRY_CAST(r.quantity AS INT) <= 0 OR TRY_CAST(r.unit_price AS DECIMAL(18,2)) IS NULL OR TRY_CAST(r.unit_price AS DECIMAL(18,2)) < 0 OR TRY_CAST(r.updated_at AS TIMESTAMP) IS NULL",
+        "INSERT INTO quality_quarantine (reject_id, source_table, source_record_id, batch_id, reason_code, source_file, detected_at) SELECT SHA2(CONCAT(COALESCE(r.product_id, 'null'), ':', r.batch_id, ':', r.source_file), 256), 'raw_products', r.product_id, r.batch_id, 'INVALID_PRODUCT', r.source_file, CURRENT_TIMESTAMP FROM raw_products r WHERE TRY_CAST(r.product_id AS BIGINT) IS NULL OR r.product_code IS NULL OR LENGTH(TRIM(r.product_code)) = 0 OR TRY_CAST(r.list_price AS DECIMAL(18,2)) IS NULL OR TRY_CAST(r.list_price AS DECIMAL(18,2)) < 0",
+        "INSERT INTO quality_quarantine (reject_id, source_table, source_record_id, batch_id, reason_code, source_file, detected_at) SELECT SHA2(CONCAT(r.order_id, ':', r.batch_id, ':missing_customer'), 256), 'raw_orders', r.order_id, r.batch_id, 'UNRESOLVED_CUSTOMER', r.source_file, CURRENT_TIMESTAMP FROM raw_orders r LEFT JOIN customer_identity_map m ON TRY_CAST(r.customer_id AS BIGINT) = m.customer_id WHERE m.customer_id IS NULL AND TRY_CAST(r.is_deleted AS BOOLEAN) = FALSE",
+        "INSERT INTO quality_quarantine (reject_id, source_table, source_record_id, batch_id, reason_code, source_file, detected_at) SELECT SHA2(CONCAT(r.order_item_id, ':', r.batch_id, ':missing_parent'), 256), 'raw_order_items', r.order_item_id, r.batch_id, 'UNRESOLVED_ORDER_OR_PRODUCT', r.source_file, CURRENT_TIMESTAMP FROM raw_order_items r LEFT JOIN silver_orders o ON TRY_CAST(r.order_id AS BIGINT) = o.order_id LEFT JOIN silver_products p ON TRY_CAST(r.product_id AS BIGINT) = p.product_id WHERE (o.order_id IS NULL OR p.product_id IS NULL) AND TRY_CAST(r.is_deleted AS BOOLEAN) = FALSE",
+        "INSERT INTO quality_quarantine (reject_id, source_table, source_record_id, batch_id, reason_code, source_file, detected_at) SELECT SHA2(CONCAT(r.kafka_topic, ':', CAST(r.kafka_partition AS STRING), ':', CAST(r.kafka_offset AS STRING)), 256), 'raw_customer_events', r.event_id, CAST(r.kafka_offset AS STRING), 'INVALID_OR_UNRESOLVED_EVENT', r.kafka_topic, CURRENT_TIMESTAMP FROM raw_customer_events r LEFT JOIN customer_identity_map m ON TRY_CAST(r.customer_id AS BIGINT) = m.customer_id WHERE m.customer_id IS NULL OR TRY_CAST(r.event_time AS TIMESTAMP) IS NULL OR r.event_id IS NULL OR r.schema_version IS NULL OR r.schema_version <> '1' OR r.event_type IS NULL OR r.event_type NOT IN ('product_viewed','product_added_to_cart','order_created','order_cancelled') OR LENGTH(TRIM(r.event_id)) = 0 OR TRY_CAST(r.event_time AS TIMESTAMP) > r.ingested_at + INTERVAL 5 MINUTES OR (r.event_type IN ('product_viewed','product_added_to_cart') AND (r.session_id IS NULL OR LENGTH(TRIM(r.session_id)) = 0 OR TRY_CAST(r.product_id AS BIGINT) IS NULL)) OR (r.event_type IN ('order_created','order_cancelled') AND TRY_CAST(r.order_id AS BIGINT) IS NULL)",
+        "INSERT INTO quality_quarantine (reject_id, source_table, source_record_id, batch_id, reason_code, source_file, detected_at) SELECT SHA2(CONCAT(COALESCE(r.product_code, 'null'), ':', r.batch_id, ':', r.source_file), 256), 'raw_partner_products', r.product_code, r.batch_id, 'INVALID_PARTNER_PRODUCT', r.source_file, CURRENT_TIMESTAMP FROM raw_partner_products r WHERE r.product_code IS NULL OR LENGTH(TRIM(r.product_code)) = 0 OR TRY_CAST(r.effective_date AS DATE) IS NULL OR r.file_checksum IS NULL"
+      ]
+    },
+    "aggregate_daily_sales": {
+      "id": "proc_Q6qfSVR5f4",
+      "module": "aggregate_daily_sales",
+      "sql": [
+        "SELECT CAST(o.ordered_at AS DATE) AS sales_date, o.currency AS currency, COUNT(DISTINCT o.order_id) AS order_count, SUM(i.quantity) AS units_sold, SUM(i.line_amount) AS gross_revenue FROM silver_orders o JOIN silver_order_items i ON o.order_id = i.order_id WHERE o.order_status = 'completed' AND o.ordered_at < CAST(:as_of_date AS TIMESTAMP) GROUP BY CAST(o.ordered_at AS DATE), o.currency",
+        "INSERT INTO daily_sales (sales_date, currency, order_count, units_sold, gross_revenue) SELECT p.sales_date, p.currency, p.order_count, p.units_sold, p.gross_revenue FROM aggregate_daily_sales p"
+      ]
+    },
+    "aggregate_product_performance": {
+      "id": "proc_qbIcHBzelH",
+      "module": "aggregate_product_performance",
+      "sql": [
+        "SELECT CAST(o.ordered_at AS DATE) AS sales_date, p.product_id AS product_id, o.currency AS currency, p.product_name AS product_name, p.category AS category, p.brand AS brand, SUM(i.quantity) AS units_sold, SUM(i.line_amount) AS gross_revenue FROM silver_orders o JOIN silver_order_items i ON o.order_id = i.order_id JOIN enriched_products p ON i.product_id = p.product_id WHERE o.order_status = 'completed' AND o.ordered_at < CAST(:as_of_date AS TIMESTAMP) GROUP BY CAST(o.ordered_at AS DATE), p.product_id, o.currency, p.product_name, p.category, p.brand",
+        "INSERT INTO product_performance (sales_date, product_id, currency, product_name, category, brand, units_sold, gross_revenue) SELECT p.sales_date, p.product_id, p.currency, p.product_name, p.category, p.brand, p.units_sold, p.gross_revenue FROM aggregate_product_performance p"
+      ]
+    },
+    "aggregate_customer_value": {
+      "id": "proc_5PKFGwJldj",
+      "module": "aggregate_customer_value",
+      "sql": [
+        "SELECT o.customer_key AS customer_key, o.currency AS currency, COUNT(DISTINCT o.order_id) AS total_orders, SUM(i.line_amount) AS total_revenue, MAX(o.ordered_at) AS last_order_at, CAST(:as_of_date AS DATE) AS snapshot_date FROM silver_orders o JOIN silver_order_items i ON o.order_id = i.order_id WHERE o.order_status = 'completed' AND o.ordered_at < CAST(:as_of_date AS TIMESTAMP) GROUP BY o.customer_key, o.currency",
+        "INSERT INTO customer_lifetime_value (customer_key, currency, total_orders, total_revenue, last_order_at, snapshot_date) SELECT p.customer_key, p.currency, p.total_orders, p.total_revenue, p.last_order_at, p.snapshot_date FROM aggregate_customer_value p"
+      ]
+    },
+    "aggregate_customer_activity": {
+      "id": "proc_hOx6AKkHBB",
+      "module": "aggregate_customer_activity",
+      "sql": [
+        "SELECT c.customer_key AS customer_key, e.event_date AS activity_date, c.country_code AS country_code, SUM(CASE WHEN e.event_type = 'product_viewed' THEN 1 ELSE 0 END) AS product_views, SUM(CASE WHEN e.event_type = 'product_added_to_cart' THEN 1 ELSE 0 END) AS cart_additions, SUM(CASE WHEN e.event_type = 'order_created' THEN 1 ELSE 0 END) AS orders_created, SUM(CASE WHEN e.event_type = 'order_cancelled' THEN 1 ELSE 0 END) AS orders_cancelled, MAX(e.event_time) AS last_event_at FROM silver_customer_events e JOIN silver_customers c ON e.customer_key = c.customer_key WHERE e.event_time < CAST(:activity_cutoff AS TIMESTAMP) GROUP BY c.customer_key, e.event_date, c.country_code",
+        "INSERT INTO customer_activity_summary (customer_key, activity_date, country_code, product_views, cart_additions, orders_created, orders_cancelled, last_event_at) SELECT p.customer_key, p.activity_date, p.country_code, p.product_views, p.cart_additions, p.orders_created, p.orders_cancelled, p.last_event_at FROM aggregate_customer_activity p"
+      ]
+    },
+    "build_customer_360": {
+      "id": "proc_GFPKimY22l",
+      "module": "build_customer_360",
+      "sql": [
+        "SELECT c.customer_key AS customer_key, COALESCE(v.currency, :reporting_currency) AS currency, c.email_hash AS customer_identifier, c.country_code AS country_code, c.marketing_consent AS marketing_consent, COALESCE(v.total_orders, 0) AS total_orders, COALESCE(v.total_revenue, 0) AS total_revenue, v.last_order_at AS last_order_at, CAST(:as_of_date AS DATE) AS snapshot_date FROM silver_customers c LEFT JOIN customer_lifetime_value v ON c.customer_key = v.customer_key AND v.snapshot_date = CAST(:as_of_date AS DATE) WHERE c.created_at < CAST(:as_of_date AS TIMESTAMP)",
+        "INSERT INTO customer_360 (customer_key, currency, customer_identifier, country_code, marketing_consent, total_orders, total_revenue, last_order_at, snapshot_date) SELECT p.customer_key, p.currency, p.customer_identifier, p.country_code, p.marketing_consent, p.total_orders, p.total_revenue, p.last_order_at, p.snapshot_date FROM build_customer_360 p"
+      ]
+    },
+    "build_churn_features": {
+      "id": "proc_2jj713mipX",
+      "module": "build_churn_features",
+      "sql": [
+        "SELECT c.customer_key AS customer_key, CAST(:as_of_date AS DATE) AS as_of_date, c.currency AS currency, COALESCE(DATEDIFF(CAST(:as_of_date AS DATE), CAST(c.last_order_at AS DATE)), 365) AS days_since_purchase, c.total_orders AS total_orders, c.total_revenue AS total_revenue, COALESCE(SUM(a.product_views), 0) AS views_30d, COALESCE(SUM(a.cart_additions), 0) AS cart_additions_30d FROM customer_360 c LEFT JOIN customer_activity_summary a ON c.customer_key = a.customer_key AND a.activity_date >= DATE_SUB(CAST(:as_of_date AS DATE), 30) AND a.activity_date < CAST(:as_of_date AS DATE) WHERE c.snapshot_date = CAST(:as_of_date AS DATE) AND c.currency = :reporting_currency GROUP BY c.customer_key, c.currency, c.last_order_at, c.total_orders, c.total_revenue",
+        "INSERT INTO churn_feature_snapshots (customer_key, as_of_date, currency, days_since_purchase, total_orders, total_revenue, views_30d, cart_additions_30d) SELECT p.customer_key, p.as_of_date, p.currency, p.days_since_purchase, p.total_orders, p.total_revenue, p.views_30d, p.cart_additions_30d FROM build_churn_features p"
+      ]
+    },
+    "score_customer_churn": {
+      "id": "proc_dsDpnPvrBJ",
+      "module": "score_customer_churn",
+      "sql": [
+        "SELECT f.customer_key AS customer_key, f.as_of_date AS as_of_date, m.model_version AS model_version, f.currency AS currency, 1.0 / (1.0 + EXP(-LEAST(35.0, GREATEST(-35.0, m.intercept + m.recency_coefficient * f.days_since_purchase + m.orders_coefficient * f.total_orders + m.revenue_coefficient * f.total_revenue + m.views_coefficient * f.views_30d + m.carts_coefficient * f.cart_additions_30d)))) AS churn_probability, CURRENT_TIMESTAMP AS scored_at FROM churn_feature_snapshots f JOIN churn_model_versions m ON f.currency = m.currency WHERE f.as_of_date = CAST(:as_of_date AS DATE) AND m.model_version = :requested_model_version AND m.approved = TRUE AND m.training_cutoff < f.as_of_date AND f.currency = :reporting_currency",
+        "INSERT INTO customer_churn_scores (customer_key, as_of_date, model_version, currency, churn_probability, scored_at) SELECT p.customer_key, p.as_of_date, p.model_version, p.currency, p.churn_probability, p.scored_at FROM score_customer_churn p"
+      ]
+    },
+    "activation_export": {
+      "id": "proc_THr6W7ng5J",
+      "module": "export_consent_filtered_scores",
+      "sql": [
+        "SELECT s.customer_key AS customer_key, CAST(s.as_of_date AS STRING) AS as_of_date, s.churn_probability AS churn_probability, s.model_version AS model_version FROM customer_churn_scores s JOIN silver_customers c ON s.customer_key = c.customer_key WHERE c.marketing_consent = TRUE AND s.as_of_date = CAST(:as_of_date AS DATE) AND s.model_version = :requested_model_version AND s.currency = :reporting_currency",
+        "INSERT INTO customer_activation_export (customer_key, as_of_date, churn_probability, model_version) SELECT p.customer_key, p.as_of_date, p.churn_probability, p.model_version FROM export_consent_filtered_scores p"
+      ]
+    },
+    "report_export": {
+      "id": "proc_uwAuQ4IwoG",
+      "module": "serve_sales_reporting",
+      "sql": [
+        "SELECT CAST(s.sales_date AS STRING) AS sales_date, s.currency AS currency, s.gross_revenue AS gross_revenue, s.order_count AS order_count FROM daily_sales s WHERE s.sales_date >= CAST(:report_start AS DATE) AND s.sales_date < CAST(:report_end AS DATE)",
+        "INSERT INTO sales_report_extract (sales_date, currency, gross_revenue, order_count) SELECT p.sales_date, p.currency, p.gross_revenue, p.order_count FROM serve_sales_reporting p"
+      ]
+    },
+    "profile_api": {
+      "id": "proc_JdSrpuLm7H",
+      "module": "updateCustomerProfile",
+      "sql": [
+        "UPDATE customers SET full_name = :full_name, email = :email, phone = :phone, address = :address, country_code = :country_code, marketing_consent = :marketing_consent, updated_at = CURRENT_TIMESTAMP WHERE customer_id = :customer_id AND is_deleted = FALSE",
+        "SELECT c.customer_id AS customer_id, CAST(c.updated_at AS STRING) AS updated_at FROM customers c WHERE c.customer_id = :customer_id"
+      ]
+    },
+    "behavior_api": {
+      "id": "proc_hVkJwN3rKM",
+      "module": "captureBehaviorEvent",
+      "sql": [
+        "INSERT INTO customer_events (event_id, event_type, customer_id, session_id, product_id, order_id, event_time, schema_version) SELECT :event_id, :event_type, CAST(:authenticated_customer_id AS STRING), :session_id, CAST(:product_id AS STRING), CAST(NULL AS STRING), :event_time, '1' WHERE :event_type IN ('product_viewed','product_added_to_cart')",
+        "SELECT :event_id AS event_id, CAST(CURRENT_TIMESTAMP AS STRING) AS accepted_at"
+      ]
+    },
+    "order_commit": {
+      "id": "proc_0YuGq2K03Y",
+      "module": "commit_order_lifecycle",
+      "sql": [
+        "UPDATE orders SET order_status = :new_status, updated_at = CURRENT_TIMESTAMP WHERE order_id = :order_id AND customer_id = :customer_id",
+        "INSERT INTO order_event_outbox (event_id, event_type, customer_id, order_id, occurred_at, publish_attempts) SELECT :event_id, :event_type, :customer_id, :order_id, CURRENT_TIMESTAMP, 0 WHERE :event_type IN ('order_created','order_cancelled')"
+      ]
+    },
+    "outbox_relay": {
+      "id": "proc_rJlLx1AwTo",
+      "module": "relay_order_events",
+      "sql": [
+        "UPDATE order_event_outbox SET publish_attempts = publish_attempts + 1 WHERE event_id = :attempted_event_id",
+        "INSERT INTO customer_events (event_id, event_type, customer_id, session_id, product_id, order_id, event_time, schema_version) SELECT o.event_id, o.event_type, CAST(o.customer_id AS STRING), CAST(NULL AS STRING), CAST(NULL AS STRING), CAST(o.order_id AS STRING), CAST(o.occurred_at AS STRING), '1' FROM order_event_outbox o WHERE o.published_at IS NULL",
+        "UPDATE order_event_outbox SET published_at = CURRENT_TIMESTAMP WHERE event_id = :acknowledged_event_id"
+      ]
+    },
+    "audit": {
+      "id": "proc_BTuhhECFqG",
+      "module": "record_pipeline_run",
+      "sql": [
+        "INSERT INTO pipeline_run_audit (run_id, job_name, started_at, completed_at, status, rows_read, rows_written, rows_rejected) SELECT :run_id, :job_name, :started_at, :completed_at, :status, :rows_read, :rows_written, :rows_rejected"
+      ]
+    },
+    "cursor_commit": {
+      "id": "proc_GQhF914SlZ",
+      "module": "commit_ingestion_cursor",
+      "sql": [
+        "INSERT INTO ingestion_cursors (source_table, last_successful_watermark, last_batch_id, checkpoint_uri) SELECT :source_table, :last_successful_watermark, :last_batch_id, :checkpoint_uri"
+      ]
+    },
+    "model_register": {
+      "id": "proc_RNg283PYQO",
+      "module": "register_approved_churn_model",
+      "sql": [
+        "INSERT INTO churn_model_versions (model_version, artifact_uri, training_cutoff, currency, intercept, recency_coefficient, orders_coefficient, revenue_coefficient, views_coefficient, carts_coefficient, approved) SELECT :model_version, :artifact_uri, :training_cutoff, :currency, :intercept, :recency_coefficient, :orders_coefficient, :revenue_coefficient, :views_coefficient, :carts_coefficient, :approved"
+      ]
+    },
+    "daily_refresh": {
+      "id": "proc_MxtH5pMC0K",
+      "module": "daily_refresh",
+      "sql": [
+        "SELECT :trigger_run_id AS run_id, :trigger_date AS as_of_date"
+      ]
+    },
+    "source_refresh": {
+      "id": "proc_Opa4pYbUjY",
+      "module": "source_refresh",
+      "sql": [
+        "SELECT :trigger_run_id AS run_id, :trigger_date AS as_of_date"
+      ]
+    },
+    "continuous_refresh": {
+      "id": "proc_OHIQNdX1t9",
+      "module": "continuous_refresh",
+      "sql": [
+        "SELECT :trigger_run_id AS run_id, :trigger_date AS as_of_date"
+      ]
+    },
+    "customer_publication": {
+      "id": "proc_ayX5zANz9O",
+      "module": "commit_customer_publication",
+      "sql": [
+        "INSERT INTO customer_pipeline_publications (batch_id, window_start, window_end, full_snapshot, baseline_batch_id, raw_version, normalized_version, identity_version, silver_version, rows_read, rows_written, rows_rejected, key_version, committed_at) SELECT p.batch_id, p.window_start, p.window_end, p.full_snapshot, p.baseline_batch_id, p.raw_version, p.normalized_version, p.identity_version, p.silver_version, p.rows_read, p.rows_written, p.rows_rejected, p.key_version, p.committed_at FROM commit_customer_publication p",
+        "INSERT INTO customer_pipeline_publications (previous_batch_id) SELECT p.previous_batch_id FROM commit_customer_publication p"
+      ]
+    },
+    "publish_epoch": {
+      "id": "proc_udU4f93bLK",
+      "module": "publish_pipeline_epoch",
+      "sql": [
+        "INSERT INTO pipeline_table_versions (pipeline_name, run_id, table_name, delta_version, previous_run_id, baseline_run_id, full_snapshot, window_start, window_end, as_of_date, committed_at) SELECT p.pipeline_name, p.run_id, p.table_name, p.delta_version, p.previous_run_id, p.baseline_run_id, p.full_snapshot, p.window_start, p.window_end, p.as_of_date, p.committed_at FROM publish_pipeline_epoch p",
+        "INSERT INTO pipeline_epoch_dependencies (consumer_pipeline, consumer_run_id, source_pipeline, source_run_id, source_table, source_delta_version) SELECT p.dep_consumer_pipeline, p.dep_consumer_run_id, p.dep_source_pipeline, p.dep_source_run_id, p.dep_source_table, p.dep_source_delta_version FROM publish_pipeline_epoch p"
+      ]
+    }
+  },
+  "entities": {
+    "customers": {
+      "id": "ent_FAx5SGcXPR",
+      "model": "pg",
+      "columns": [
+        {
+          "column_name": "customer_id",
+          "data_type": "bigint",
+          "is_primary_key": true,
+          "is_not_null": true
+        },
+        {
+          "column_name": "full_name",
+          "data_type": "text",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "email",
+          "data_type": "text",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "phone",
+          "data_type": "text",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "address",
+          "data_type": "text",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "country_code",
+          "data_type": "varchar",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "marketing_consent",
+          "data_type": "boolean",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "created_at",
+          "data_type": "timestamp with time zone",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "updated_at",
+          "data_type": "timestamp with time zone",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "is_deleted",
+          "data_type": "boolean",
+          "is_primary_key": false,
+          "is_not_null": false
+        }
+      ]
+    },
+    "orders": {
+      "id": "ent_uy7P88QGJZ",
+      "model": "pg",
+      "columns": [
+        {
+          "column_name": "order_id",
+          "data_type": "bigint",
+          "is_primary_key": true,
+          "is_not_null": true
+        },
+        {
+          "column_name": "customer_id",
+          "data_type": "bigint",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "order_status",
+          "data_type": "varchar",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "ordered_at",
+          "data_type": "timestamp with time zone",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "currency",
+          "data_type": "varchar",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "updated_at",
+          "data_type": "timestamp with time zone",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "is_deleted",
+          "data_type": "boolean",
+          "is_primary_key": false,
+          "is_not_null": false
+        }
+      ]
+    },
+    "order_items": {
+      "id": "ent_10o2UbNHK4",
+      "model": "pg",
+      "columns": [
+        {
+          "column_name": "order_item_id",
+          "data_type": "bigint",
+          "is_primary_key": true,
+          "is_not_null": true
+        },
+        {
+          "column_name": "order_id",
+          "data_type": "bigint",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "product_id",
+          "data_type": "bigint",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "quantity",
+          "data_type": "integer",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "unit_price",
+          "data_type": "numeric(18,2)",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "updated_at",
+          "data_type": "timestamp with time zone",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "is_deleted",
+          "data_type": "boolean",
+          "is_primary_key": false,
+          "is_not_null": false
+        }
+      ]
+    },
+    "products": {
+      "id": "ent_dFaNHfD9Qu",
+      "model": "pg",
+      "columns": [
+        {
+          "column_name": "product_id",
+          "data_type": "bigint",
+          "is_primary_key": true,
+          "is_not_null": true
+        },
+        {
+          "column_name": "product_code",
+          "data_type": "varchar",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "product_name",
+          "data_type": "text",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "category",
+          "data_type": "varchar",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "list_price",
+          "data_type": "numeric(18,2)",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "currency",
+          "data_type": "varchar",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "updated_at",
+          "data_type": "timestamp with time zone",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "is_deleted",
+          "data_type": "boolean",
+          "is_primary_key": false,
+          "is_not_null": false
+        }
+      ]
+    },
+    "landing_customers": {
+      "id": "ent_A07a85SVvL",
+      "model": "landing",
+      "columns": [
+        {
+          "column_name": "customer_id",
+          "data_type": "string",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "full_name",
+          "data_type": "string",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "email",
+          "data_type": "string",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "phone",
+          "data_type": "string",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "address",
+          "data_type": "string",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "country_code",
+          "data_type": "string",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "marketing_consent",
+          "data_type": "string",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "created_at",
+          "data_type": "string",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "updated_at",
+          "data_type": "string",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "is_deleted",
+          "data_type": "string",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "source_file",
+          "data_type": "string",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "batch_id",
+          "data_type": "string",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "extracted_at",
+          "data_type": "string",
+          "is_primary_key": false,
+          "is_not_null": false
+        }
+      ]
+    },
+    "raw_customers": {
+      "id": "ent_SKb1zSaz6y",
+      "model": "bronze",
+      "columns": [
+        {
+          "column_name": "customer_id",
+          "data_type": "STRING",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "full_name",
+          "data_type": "STRING",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "email",
+          "data_type": "STRING",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "phone",
+          "data_type": "STRING",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "address",
+          "data_type": "STRING",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "country_code",
+          "data_type": "STRING",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "marketing_consent",
+          "data_type": "STRING",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "created_at",
+          "data_type": "STRING",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "updated_at",
+          "data_type": "STRING",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "is_deleted",
+          "data_type": "STRING",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "source_file",
+          "data_type": "STRING",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "batch_id",
+          "data_type": "STRING",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "ingested_at",
+          "data_type": "TIMESTAMP_LTZ",
+          "is_primary_key": false,
+          "is_not_null": false
+        }
+      ]
+    },
+    "landing_orders": {
+      "id": "ent_wMSM4eqeVi",
+      "model": "landing",
+      "columns": [
+        {
+          "column_name": "order_id",
+          "data_type": "string",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "customer_id",
+          "data_type": "string",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "order_status",
+          "data_type": "string",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "ordered_at",
+          "data_type": "string",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "currency",
+          "data_type": "string",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "updated_at",
+          "data_type": "string",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "is_deleted",
+          "data_type": "string",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "source_file",
+          "data_type": "string",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "batch_id",
+          "data_type": "string",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "extracted_at",
+          "data_type": "string",
+          "is_primary_key": false,
+          "is_not_null": false
+        }
+      ]
+    },
+    "raw_orders": {
+      "id": "ent_PORZLH9qQU",
+      "model": "bronze",
+      "columns": [
+        {
+          "column_name": "order_id",
+          "data_type": "STRING",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "customer_id",
+          "data_type": "STRING",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "order_status",
+          "data_type": "STRING",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "ordered_at",
+          "data_type": "STRING",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "currency",
+          "data_type": "STRING",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "updated_at",
+          "data_type": "STRING",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "is_deleted",
+          "data_type": "STRING",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "source_file",
+          "data_type": "STRING",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "batch_id",
+          "data_type": "STRING",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "ingested_at",
+          "data_type": "TIMESTAMP_LTZ",
+          "is_primary_key": false,
+          "is_not_null": false
+        }
+      ]
+    },
+    "landing_order_items": {
+      "id": "ent_5dU4N997kR",
+      "model": "landing",
+      "columns": [
+        {
+          "column_name": "order_item_id",
+          "data_type": "string",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "order_id",
+          "data_type": "string",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "product_id",
+          "data_type": "string",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "quantity",
+          "data_type": "string",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "unit_price",
+          "data_type": "string",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "updated_at",
+          "data_type": "string",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "is_deleted",
+          "data_type": "string",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "source_file",
+          "data_type": "string",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "batch_id",
+          "data_type": "string",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "extracted_at",
+          "data_type": "string",
+          "is_primary_key": false,
+          "is_not_null": false
+        }
+      ]
+    },
+    "raw_order_items": {
+      "id": "ent_z2tcO1gvAz",
+      "model": "bronze",
+      "columns": [
+        {
+          "column_name": "order_item_id",
+          "data_type": "STRING",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "order_id",
+          "data_type": "STRING",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "product_id",
+          "data_type": "STRING",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "quantity",
+          "data_type": "STRING",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "unit_price",
+          "data_type": "STRING",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "updated_at",
+          "data_type": "STRING",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "is_deleted",
+          "data_type": "STRING",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "source_file",
+          "data_type": "STRING",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "batch_id",
+          "data_type": "STRING",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "ingested_at",
+          "data_type": "TIMESTAMP_LTZ",
+          "is_primary_key": false,
+          "is_not_null": false
+        }
+      ]
+    },
+    "landing_products": {
+      "id": "ent_SXTZ6E6QUZ",
+      "model": "landing",
+      "columns": [
+        {
+          "column_name": "product_id",
+          "data_type": "string",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "product_code",
+          "data_type": "string",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "product_name",
+          "data_type": "string",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "category",
+          "data_type": "string",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "list_price",
+          "data_type": "string",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "currency",
+          "data_type": "string",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "updated_at",
+          "data_type": "string",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "is_deleted",
+          "data_type": "string",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "source_file",
+          "data_type": "string",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "batch_id",
+          "data_type": "string",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "extracted_at",
+          "data_type": "string",
+          "is_primary_key": false,
+          "is_not_null": false
+        }
+      ]
+    },
+    "raw_products": {
+      "id": "ent_eBfq2md9C9",
+      "model": "bronze",
+      "columns": [
+        {
+          "column_name": "product_id",
+          "data_type": "STRING",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "product_code",
+          "data_type": "STRING",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "product_name",
+          "data_type": "STRING",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "category",
+          "data_type": "STRING",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "list_price",
+          "data_type": "STRING",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "currency",
+          "data_type": "STRING",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "updated_at",
+          "data_type": "STRING",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "is_deleted",
+          "data_type": "STRING",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "source_file",
+          "data_type": "STRING",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "batch_id",
+          "data_type": "STRING",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "ingested_at",
+          "data_type": "TIMESTAMP_LTZ",
+          "is_primary_key": false,
+          "is_not_null": false
+        }
+      ]
+    },
+    "customer_events": {
+      "id": "ent_DZlRQfDL7X",
+      "model": "kafka",
+      "columns": [
+        {
+          "column_name": "event_id",
+          "data_type": "string",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "event_type",
+          "data_type": "string",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "customer_id",
+          "data_type": "string",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "session_id",
+          "data_type": "string",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "product_id",
+          "data_type": "string",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "order_id",
+          "data_type": "string",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "event_time",
+          "data_type": "string",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "schema_version",
+          "data_type": "string",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "kafka_topic",
+          "data_type": "string",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "kafka_partition",
+          "data_type": "number",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "kafka_offset",
+          "data_type": "number",
+          "is_primary_key": false,
+          "is_not_null": false
+        }
+      ]
+    },
+    "raw_customer_events": {
+      "id": "ent_teYDsy8xoQ",
+      "model": "bronze",
+      "columns": [
+        {
+          "column_name": "event_id",
+          "data_type": "STRING",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "event_type",
+          "data_type": "STRING",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "customer_id",
+          "data_type": "STRING",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "session_id",
+          "data_type": "STRING",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "product_id",
+          "data_type": "STRING",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "order_id",
+          "data_type": "STRING",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "event_time",
+          "data_type": "STRING",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "schema_version",
+          "data_type": "STRING",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "kafka_topic",
+          "data_type": "STRING",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "kafka_partition",
+          "data_type": "INT",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "kafka_offset",
+          "data_type": "BIGINT",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "ingested_at",
+          "data_type": "TIMESTAMP_LTZ",
+          "is_primary_key": false,
+          "is_not_null": false
+        }
+      ]
+    },
+    "partner_product_feed": {
+      "id": "ent_v278wGjO40",
+      "model": "partner",
+      "columns": [
+        {
+          "column_name": "partner_id",
+          "data_type": "string",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "product_code",
+          "data_type": "string",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "brand",
+          "data_type": "string",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "supplier_region",
+          "data_type": "string",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "effective_date",
+          "data_type": "string",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "file_checksum",
+          "data_type": "string",
+          "is_primary_key": false,
+          "is_not_null": false
+        }
+      ]
+    },
+    "landing_partner_products": {
+      "id": "ent_9NuDZBOePx",
+      "model": "landing",
+      "columns": [
+        {
+          "column_name": "partner_id",
+          "data_type": "string",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "product_code",
+          "data_type": "string",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "brand",
+          "data_type": "string",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "supplier_region",
+          "data_type": "string",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "effective_date",
+          "data_type": "string",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "file_checksum",
+          "data_type": "string",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "source_file",
+          "data_type": "string",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "batch_id",
+          "data_type": "string",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "extracted_at",
+          "data_type": "string",
+          "is_primary_key": false,
+          "is_not_null": false
+        }
+      ]
+    },
+    "raw_partner_products": {
+      "id": "ent_ksFLH3Zv3B",
+      "model": "bronze",
+      "columns": [
+        {
+          "column_name": "partner_id",
+          "data_type": "STRING",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "product_code",
+          "data_type": "STRING",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "brand",
+          "data_type": "STRING",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "supplier_region",
+          "data_type": "STRING",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "effective_date",
+          "data_type": "STRING",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "file_checksum",
+          "data_type": "STRING",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "source_file",
+          "data_type": "STRING",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "batch_id",
+          "data_type": "STRING",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "ingested_at",
+          "data_type": "TIMESTAMP_LTZ",
+          "is_primary_key": false,
+          "is_not_null": false
+        }
+      ]
+    },
+    "normalized_customers": {
+      "id": "ent_lqOnmdrh8Y",
+      "model": "restricted",
+      "columns": [
+        {
+          "column_name": "customer_id",
+          "data_type": "BIGINT",
+          "is_primary_key": true,
+          "is_not_null": true
+        },
+        {
+          "column_name": "full_name",
+          "data_type": "STRING",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "email_norm",
+          "data_type": "STRING",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "phone_norm",
+          "data_type": "STRING",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "address",
+          "data_type": "STRING",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "country_code",
+          "data_type": "STRING",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "marketing_consent",
+          "data_type": "BOOLEAN",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "created_at",
+          "data_type": "TIMESTAMP_LTZ",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "updated_at",
+          "data_type": "TIMESTAMP_LTZ",
+          "is_primary_key": false,
+          "is_not_null": false
+        }
+      ]
+    },
+    "silver_customers": {
+      "id": "ent_YmnGZVd5Dv",
+      "model": "silver",
+      "columns": [
+        {
+          "column_name": "customer_key",
+          "data_type": "STRING",
+          "is_primary_key": true,
+          "is_not_null": true
+        },
+        {
+          "column_name": "email_hash",
+          "data_type": "STRING",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "country_code",
+          "data_type": "STRING",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "marketing_consent",
+          "data_type": "BOOLEAN",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "created_at",
+          "data_type": "TIMESTAMP_LTZ",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "updated_at",
+          "data_type": "TIMESTAMP_LTZ",
+          "is_primary_key": false,
+          "is_not_null": false
+        }
+      ]
+    },
+    "customer_identity_map": {
+      "id": "ent_mithD0HEPM",
+      "model": "restricted",
+      "columns": [
+        {
+          "column_name": "customer_id",
+          "data_type": "BIGINT",
+          "is_primary_key": true,
+          "is_not_null": true
+        },
+        {
+          "column_name": "customer_key",
+          "data_type": "STRING",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "key_version",
+          "data_type": "STRING",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "updated_at",
+          "data_type": "TIMESTAMP_LTZ",
+          "is_primary_key": false,
+          "is_not_null": false
+        }
+      ]
+    },
+    "silver_orders": {
+      "id": "ent_FYCjL55yKd",
+      "model": "silver",
+      "columns": [
+        {
+          "column_name": "order_id",
+          "data_type": "BIGINT",
+          "is_primary_key": true,
+          "is_not_null": true
+        },
+        {
+          "column_name": "customer_key",
+          "data_type": "STRING",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "order_status",
+          "data_type": "STRING",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "ordered_at",
+          "data_type": "TIMESTAMP_LTZ",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "currency",
+          "data_type": "STRING",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "updated_at",
+          "data_type": "TIMESTAMP_LTZ",
+          "is_primary_key": false,
+          "is_not_null": false
+        }
+      ]
+    },
+    "silver_order_items": {
+      "id": "ent_Rx7H3w1tX6",
+      "model": "silver",
+      "columns": [
+        {
+          "column_name": "order_item_id",
+          "data_type": "BIGINT",
+          "is_primary_key": true,
+          "is_not_null": true
+        },
+        {
+          "column_name": "order_id",
+          "data_type": "BIGINT",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "product_id",
+          "data_type": "BIGINT",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "quantity",
+          "data_type": "INT",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "unit_price",
+          "data_type": "DECIMAL(18,2)",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "line_amount",
+          "data_type": "DECIMAL(18,2)",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "updated_at",
+          "data_type": "TIMESTAMP_LTZ",
+          "is_primary_key": false,
+          "is_not_null": false
+        }
+      ]
+    },
+    "silver_products": {
+      "id": "ent_C8KX6k7Kp6",
+      "model": "silver",
+      "columns": [
+        {
+          "column_name": "product_id",
+          "data_type": "BIGINT",
+          "is_primary_key": true,
+          "is_not_null": true
+        },
+        {
+          "column_name": "product_code",
+          "data_type": "STRING",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "product_name",
+          "data_type": "STRING",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "category",
+          "data_type": "STRING",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "list_price",
+          "data_type": "DECIMAL(18,2)",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "currency",
+          "data_type": "STRING",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "updated_at",
+          "data_type": "TIMESTAMP_LTZ",
+          "is_primary_key": false,
+          "is_not_null": false
+        }
+      ]
+    },
+    "silver_partner_products": {
+      "id": "ent_Ld389mx9J5",
+      "model": "silver",
+      "columns": [
+        {
+          "column_name": "product_code",
+          "data_type": "STRING",
+          "is_primary_key": true,
+          "is_not_null": true
+        },
+        {
+          "column_name": "partner_id",
+          "data_type": "STRING",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "brand",
+          "data_type": "STRING",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "supplier_region",
+          "data_type": "STRING",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "effective_date",
+          "data_type": "DATE",
+          "is_primary_key": false,
+          "is_not_null": false
+        }
+      ]
+    },
+    "silver_customer_events": {
+      "id": "ent_6t1pXsm8yq",
+      "model": "silver",
+      "columns": [
+        {
+          "column_name": "event_id",
+          "data_type": "STRING",
+          "is_primary_key": true,
+          "is_not_null": true
+        },
+        {
+          "column_name": "event_type",
+          "data_type": "STRING",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "customer_key",
+          "data_type": "STRING",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "session_id",
+          "data_type": "STRING",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "product_id",
+          "data_type": "BIGINT",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "order_id",
+          "data_type": "BIGINT",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "event_time",
+          "data_type": "TIMESTAMP_LTZ",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "event_date",
+          "data_type": "DATE",
+          "is_primary_key": false,
+          "is_not_null": false
+        }
+      ]
+    },
+    "enriched_products": {
+      "id": "ent_cnCXLVeilJ",
+      "model": "silver",
+      "columns": [
+        {
+          "column_name": "product_id",
+          "data_type": "BIGINT",
+          "is_primary_key": true,
+          "is_not_null": true
+        },
+        {
+          "column_name": "product_code",
+          "data_type": "STRING",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "product_name",
+          "data_type": "STRING",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "category",
+          "data_type": "STRING",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "brand",
+          "data_type": "STRING",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "supplier_region",
+          "data_type": "STRING",
+          "is_primary_key": false,
+          "is_not_null": false
+        }
+      ]
+    },
+    "daily_sales": {
+      "id": "ent_15YSLF4yxr",
+      "model": "gold",
+      "columns": [
+        {
+          "column_name": "sales_date",
+          "data_type": "DATE",
+          "is_primary_key": true,
+          "is_not_null": true
+        },
+        {
+          "column_name": "currency",
+          "data_type": "STRING",
+          "is_primary_key": true,
+          "is_not_null": true
+        },
+        {
+          "column_name": "order_count",
+          "data_type": "BIGINT",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "units_sold",
+          "data_type": "BIGINT",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "gross_revenue",
+          "data_type": "DECIMAL(18,2)",
+          "is_primary_key": false,
+          "is_not_null": false
+        }
+      ]
+    },
+    "product_performance": {
+      "id": "ent_BdngIzYqgF",
+      "model": "gold",
+      "columns": [
+        {
+          "column_name": "sales_date",
+          "data_type": "DATE",
+          "is_primary_key": true,
+          "is_not_null": true
+        },
+        {
+          "column_name": "product_id",
+          "data_type": "BIGINT",
+          "is_primary_key": true,
+          "is_not_null": true
+        },
+        {
+          "column_name": "currency",
+          "data_type": "STRING",
+          "is_primary_key": true,
+          "is_not_null": true
+        },
+        {
+          "column_name": "product_name",
+          "data_type": "STRING",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "category",
+          "data_type": "STRING",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "brand",
+          "data_type": "STRING",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "units_sold",
+          "data_type": "BIGINT",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "gross_revenue",
+          "data_type": "DECIMAL(18,2)",
+          "is_primary_key": false,
+          "is_not_null": false
+        }
+      ]
+    },
+    "customer_lifetime_value": {
+      "id": "ent_2jENfEBi65",
+      "model": "gold",
+      "columns": [
+        {
+          "column_name": "customer_key",
+          "data_type": "STRING",
+          "is_primary_key": true,
+          "is_not_null": true
+        },
+        {
+          "column_name": "currency",
+          "data_type": "STRING",
+          "is_primary_key": true,
+          "is_not_null": true
+        },
+        {
+          "column_name": "total_orders",
+          "data_type": "BIGINT",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "total_revenue",
+          "data_type": "DECIMAL(18,2)",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "last_order_at",
+          "data_type": "TIMESTAMP_LTZ",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "snapshot_date",
+          "data_type": "DATE",
+          "is_primary_key": false,
+          "is_not_null": false
+        }
+      ]
+    },
+    "customer_activity_summary": {
+      "id": "ent_tUWHIbc7GU",
+      "model": "gold",
+      "columns": [
+        {
+          "column_name": "customer_key",
+          "data_type": "STRING",
+          "is_primary_key": true,
+          "is_not_null": true
+        },
+        {
+          "column_name": "activity_date",
+          "data_type": "DATE",
+          "is_primary_key": true,
+          "is_not_null": true
+        },
+        {
+          "column_name": "country_code",
+          "data_type": "STRING",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "product_views",
+          "data_type": "BIGINT",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "cart_additions",
+          "data_type": "BIGINT",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "orders_created",
+          "data_type": "BIGINT",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "orders_cancelled",
+          "data_type": "BIGINT",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "last_event_at",
+          "data_type": "TIMESTAMP_LTZ",
+          "is_primary_key": false,
+          "is_not_null": false
+        }
+      ]
+    },
+    "customer_360": {
+      "id": "ent_BHRlLa4kUa",
+      "model": "gold",
+      "columns": [
+        {
+          "column_name": "customer_key",
+          "data_type": "STRING",
+          "is_primary_key": true,
+          "is_not_null": true
+        },
+        {
+          "column_name": "currency",
+          "data_type": "STRING",
+          "is_primary_key": true,
+          "is_not_null": true
+        },
+        {
+          "column_name": "customer_identifier",
+          "data_type": "STRING",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "country_code",
+          "data_type": "STRING",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "marketing_consent",
+          "data_type": "BOOLEAN",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "total_orders",
+          "data_type": "BIGINT",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "total_revenue",
+          "data_type": "DECIMAL(18,2)",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "last_order_at",
+          "data_type": "TIMESTAMP_LTZ",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "snapshot_date",
+          "data_type": "DATE",
+          "is_primary_key": false,
+          "is_not_null": false
+        }
+      ]
+    },
+    "churn_feature_snapshots": {
+      "id": "ent_yF4WKy5yaN",
+      "model": "ml",
+      "columns": [
+        {
+          "column_name": "customer_key",
+          "data_type": "STRING",
+          "is_primary_key": true,
+          "is_not_null": true
+        },
+        {
+          "column_name": "as_of_date",
+          "data_type": "DATE",
+          "is_primary_key": true,
+          "is_not_null": true
+        },
+        {
+          "column_name": "currency",
+          "data_type": "STRING",
+          "is_primary_key": true,
+          "is_not_null": true
+        },
+        {
+          "column_name": "days_since_purchase",
+          "data_type": "INT",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "total_orders",
+          "data_type": "BIGINT",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "total_revenue",
+          "data_type": "DECIMAL(18,2)",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "views_30d",
+          "data_type": "BIGINT",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "cart_additions_30d",
+          "data_type": "BIGINT",
+          "is_primary_key": false,
+          "is_not_null": false
+        }
+      ]
+    },
+    "churn_model_versions": {
+      "id": "ent_VE89BLuTnx",
+      "model": "ml",
+      "columns": [
+        {
+          "column_name": "model_version",
+          "data_type": "STRING",
+          "is_primary_key": true,
+          "is_not_null": true
+        },
+        {
+          "column_name": "artifact_uri",
+          "data_type": "STRING",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "training_cutoff",
+          "data_type": "DATE",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "currency",
+          "data_type": "STRING",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "intercept",
+          "data_type": "DOUBLE",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "recency_coefficient",
+          "data_type": "DOUBLE",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "orders_coefficient",
+          "data_type": "DOUBLE",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "revenue_coefficient",
+          "data_type": "DOUBLE",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "views_coefficient",
+          "data_type": "DOUBLE",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "carts_coefficient",
+          "data_type": "DOUBLE",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "approved",
+          "data_type": "BOOLEAN",
+          "is_primary_key": false,
+          "is_not_null": false
+        }
+      ]
+    },
+    "customer_churn_scores": {
+      "id": "ent_AeqUBObaKa",
+      "model": "ml",
+      "columns": [
+        {
+          "column_name": "customer_key",
+          "data_type": "STRING",
+          "is_primary_key": true,
+          "is_not_null": true
+        },
+        {
+          "column_name": "as_of_date",
+          "data_type": "DATE",
+          "is_primary_key": true,
+          "is_not_null": true
+        },
+        {
+          "column_name": "model_version",
+          "data_type": "STRING",
+          "is_primary_key": true,
+          "is_not_null": true
+        },
+        {
+          "column_name": "currency",
+          "data_type": "STRING",
+          "is_primary_key": true,
+          "is_not_null": true
+        },
+        {
+          "column_name": "churn_probability",
+          "data_type": "DOUBLE",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "scored_at",
+          "data_type": "TIMESTAMP_LTZ",
+          "is_primary_key": false,
+          "is_not_null": false
+        }
+      ]
+    },
+    "customer_activation_export": {
+      "id": "ent_sjLiToAlxN",
+      "model": "bi",
+      "columns": [
+        {
+          "column_name": "customer_key",
+          "data_type": "string",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "as_of_date",
+          "data_type": "string",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "churn_probability",
+          "data_type": "number",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "model_version",
+          "data_type": "string",
+          "is_primary_key": false,
+          "is_not_null": false
+        }
+      ]
+    },
+    "sales_report_extract": {
+      "id": "ent_RJMDXMcmez",
+      "model": "bi",
+      "columns": [
+        {
+          "column_name": "sales_date",
+          "data_type": "string",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "currency",
+          "data_type": "string",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "gross_revenue",
+          "data_type": "number",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "order_count",
+          "data_type": "number",
+          "is_primary_key": false,
+          "is_not_null": false
+        }
+      ]
+    },
+    "pipeline_run_audit": {
+      "id": "ent_XQEPTzi2jr",
+      "model": "jobs",
+      "columns": [
+        {
+          "column_name": "run_id",
+          "data_type": "string",
+          "is_primary_key": true,
+          "is_not_null": true
+        },
+        {
+          "column_name": "job_name",
+          "data_type": "string",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "started_at",
+          "data_type": "string",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "completed_at",
+          "data_type": "string",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "status",
+          "data_type": "string",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "rows_read",
+          "data_type": "number",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "rows_written",
+          "data_type": "number",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "rows_rejected",
+          "data_type": "number",
+          "is_primary_key": false,
+          "is_not_null": false
+        }
+      ]
+    },
+    "ingestion_cursors": {
+      "id": "ent_ComhX93Qfj",
+      "model": "jobs",
+      "columns": [
+        {
+          "column_name": "source_table",
+          "data_type": "string",
+          "is_primary_key": true,
+          "is_not_null": true
+        },
+        {
+          "column_name": "last_successful_watermark",
+          "data_type": "string",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "last_batch_id",
+          "data_type": "string",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "checkpoint_uri",
+          "data_type": "string",
+          "is_primary_key": false,
+          "is_not_null": false
+        }
+      ]
+    },
+    "quality_quarantine": {
+      "id": "ent_C0yZCmnxw4",
+      "model": "bronze",
+      "columns": [
+        {
+          "column_name": "reject_id",
+          "data_type": "STRING",
+          "is_primary_key": true,
+          "is_not_null": true
+        },
+        {
+          "column_name": "source_table",
+          "data_type": "STRING",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "source_record_id",
+          "data_type": "STRING",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "batch_id",
+          "data_type": "STRING",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "reason_code",
+          "data_type": "STRING",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "source_file",
+          "data_type": "STRING",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "detected_at",
+          "data_type": "TIMESTAMP_LTZ",
+          "is_primary_key": false,
+          "is_not_null": false
+        }
+      ]
+    },
+    "order_event_outbox": {
+      "id": "ent_fe1q46uBrH",
+      "model": "pg",
+      "columns": [
+        {
+          "column_name": "event_id",
+          "data_type": "text",
+          "is_primary_key": true,
+          "is_not_null": true
+        },
+        {
+          "column_name": "event_type",
+          "data_type": "text",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "customer_id",
+          "data_type": "bigint",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "order_id",
+          "data_type": "bigint",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "occurred_at",
+          "data_type": "timestamp with time zone",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "published_at",
+          "data_type": "timestamp with time zone",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "publish_attempts",
+          "data_type": "integer",
+          "is_primary_key": false,
+          "is_not_null": false
+        }
+      ]
+    },
+    "customer_pipeline_publications": {
+      "id": "ent_nZGB4dSm1r",
+      "model": "jobs",
+      "columns": [
+        {
+          "column_name": "batch_id",
+          "data_type": "string",
+          "is_primary_key": true,
+          "is_not_null": true
+        },
+        {
+          "column_name": "window_start",
+          "data_type": "string",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "window_end",
+          "data_type": "string",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "full_snapshot",
+          "data_type": "Boolean",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "baseline_batch_id",
+          "data_type": "string",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "raw_version",
+          "data_type": "number",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "normalized_version",
+          "data_type": "number",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "identity_version",
+          "data_type": "number",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "silver_version",
+          "data_type": "number",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "rows_read",
+          "data_type": "number",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "rows_written",
+          "data_type": "number",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "rows_rejected",
+          "data_type": "number",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "key_version",
+          "data_type": "string",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "committed_at",
+          "data_type": "string",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "previous_batch_id",
+          "data_type": "string",
+          "is_primary_key": false,
+          "is_not_null": false
+        }
+      ]
+    },
+    "pipeline_table_versions": {
+      "id": "ent_q6mBcLr5LB",
+      "model": "jobs",
+      "columns": [
+        {
+          "column_name": "pipeline_name",
+          "data_type": "string",
+          "is_primary_key": true,
+          "is_not_null": true
+        },
+        {
+          "column_name": "run_id",
+          "data_type": "string",
+          "is_primary_key": true,
+          "is_not_null": true
+        },
+        {
+          "column_name": "table_name",
+          "data_type": "string",
+          "is_primary_key": true,
+          "is_not_null": true
+        },
+        {
+          "column_name": "delta_version",
+          "data_type": "number",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "previous_run_id",
+          "data_type": "string",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "baseline_run_id",
+          "data_type": "string",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "full_snapshot",
+          "data_type": "Boolean",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "window_start",
+          "data_type": "string",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "window_end",
+          "data_type": "string",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "as_of_date",
+          "data_type": "string",
+          "is_primary_key": false,
+          "is_not_null": false
+        },
+        {
+          "column_name": "committed_at",
+          "data_type": "string",
+          "is_primary_key": false,
+          "is_not_null": false
+        }
+      ]
+    },
+    "pipeline_epoch_dependencies": {
+      "id": "ent_O0xUAtXZAG",
+      "model": "jobs",
+      "columns": [
+        {
+          "column_name": "consumer_pipeline",
+          "data_type": "string",
+          "is_primary_key": true,
+          "is_not_null": true
+        },
+        {
+          "column_name": "consumer_run_id",
+          "data_type": "string",
+          "is_primary_key": true,
+          "is_not_null": true
+        },
+        {
+          "column_name": "source_pipeline",
+          "data_type": "string",
+          "is_primary_key": true,
+          "is_not_null": true
+        },
+        {
+          "column_name": "source_run_id",
+          "data_type": "string",
+          "is_primary_key": true,
+          "is_not_null": true
+        },
+        {
+          "column_name": "source_table",
+          "data_type": "string",
+          "is_primary_key": true,
+          "is_not_null": true
+        },
+        {
+          "column_name": "source_delta_version",
+          "data_type": "number",
+          "is_primary_key": false,
+          "is_not_null": false
+        }
+      ]
+    }
+  }
+}

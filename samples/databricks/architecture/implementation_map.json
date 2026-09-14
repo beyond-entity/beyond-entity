@@ -1,0 +1,224 @@
+{
+  "sync_customers": {
+    "code": "source.py; pipeline.py",
+    "tests": "test_customer.py; test_adapters.py",
+    "processor_id": "proc_tLb4Vvc4IN",
+    "module": "sync_customers"
+  },
+  "normalize_customers": {
+    "code": "transforms.py; pipeline.py",
+    "tests": "test_customer.py",
+    "processor_id": "proc_iV9fZ5QRIe",
+    "module": "normalize_customers"
+  },
+  "mask_customers": {
+    "code": "transforms.py; pipeline.py",
+    "tests": "test_customer.py",
+    "processor_id": "proc_VOPDc38HLm",
+    "module": "pseudonymize_customers"
+  },
+  "sync_orders": {
+    "code": "batch.py",
+    "tests": "test_batch.py",
+    "processor_id": "proc_l6hhYLa792",
+    "module": "sync_orders"
+  },
+  "sync_order_items": {
+    "code": "batch.py",
+    "tests": "test_batch.py",
+    "processor_id": "proc_O4QuAZheX5",
+    "module": "sync_order_items"
+  },
+  "sync_products": {
+    "code": "batch.py",
+    "tests": "test_batch.py",
+    "processor_id": "proc_myHDLtCBL3",
+    "module": "sync_products"
+  },
+  "partner_receive": {
+    "code": "batch.py",
+    "tests": "test_batch.py",
+    "processor_id": "proc_cIt9it4kMm",
+    "module": "receive_partner_products"
+  },
+  "bronze_ingest": {
+    "code": "pipeline.py; batch.py",
+    "tests": "test_customer.py; test_batch.py",
+    "processor_id": "proc_fM15NUfRm4",
+    "module": "ingest_landing_to_bronze"
+  },
+  "stream_ingest": {
+    "code": "streaming.py",
+    "tests": "test_streaming.py",
+    "processor_id": "proc_OiRRHIXDqQ",
+    "module": "stream_kafka_to_bronze"
+  },
+  "clean_events": {
+    "code": "streaming.py",
+    "tests": "test_streaming.py",
+    "processor_id": "proc_eIaNup3Rc6",
+    "module": "clean_streaming_events"
+  },
+  "clean_orders": {
+    "code": "silver.py; modeled.py",
+    "tests": "test_batch.py",
+    "processor_id": "proc_5gh3GHrz95",
+    "module": "clean_orders"
+  },
+  "clean_products": {
+    "code": "silver.py; modeled.py",
+    "tests": "test_batch.py",
+    "processor_id": "proc_Bw43kNAJLO",
+    "module": "clean_products"
+  },
+  "clean_items": {
+    "code": "silver.py; modeled.py",
+    "tests": "test_batch.py",
+    "processor_id": "proc_Yqr7ZuRs9W",
+    "module": "clean_items"
+  },
+  "clean_partner": {
+    "code": "silver.py; modeled.py",
+    "tests": "test_batch.py",
+    "processor_id": "proc_4bl6mv4kjN",
+    "module": "clean_partner_products"
+  },
+  "enrich_products": {
+    "code": "silver.py; modeled.py",
+    "tests": "test_batch.py",
+    "processor_id": "proc_GVyXMdEKUc",
+    "module": "enrich_product_catalog"
+  },
+  "quarantine": {
+    "code": "transforms.py; silver.py; streaming.py",
+    "tests": "test_customer.py; test_batch.py; test_streaming.py",
+    "processor_id": "proc_xPJZ3R43Lt",
+    "module": "quarantine_invalid_records"
+  },
+  "aggregate_daily_sales": {
+    "code": "gold.py; modeled.py",
+    "tests": "test_gold.py; test_end_to_end.py",
+    "processor_id": "proc_Q6qfSVR5f4",
+    "module": "aggregate_daily_sales"
+  },
+  "aggregate_product_performance": {
+    "code": "gold.py; modeled.py",
+    "tests": "test_gold.py; test_end_to_end.py",
+    "processor_id": "proc_qbIcHBzelH",
+    "module": "aggregate_product_performance"
+  },
+  "aggregate_customer_value": {
+    "code": "gold.py; modeled.py",
+    "tests": "test_gold.py; test_end_to_end.py",
+    "processor_id": "proc_5PKFGwJldj",
+    "module": "aggregate_customer_value"
+  },
+  "aggregate_customer_activity": {
+    "code": "gold.py; modeled.py",
+    "tests": "test_gold.py; test_end_to_end.py",
+    "processor_id": "proc_hOx6AKkHBB",
+    "module": "aggregate_customer_activity"
+  },
+  "build_customer_360": {
+    "code": "gold.py; modeled.py",
+    "tests": "test_gold.py; test_end_to_end.py",
+    "processor_id": "proc_GFPKimY22l",
+    "module": "build_customer_360"
+  },
+  "build_churn_features": {
+    "code": "ml.py; modeled.py",
+    "tests": "test_ml.py",
+    "processor_id": "proc_2jj713mipX",
+    "module": "build_churn_features"
+  },
+  "score_customer_churn": {
+    "code": "ml.py; modeled.py",
+    "tests": "test_ml.py",
+    "processor_id": "proc_dsDpnPvrBJ",
+    "module": "score_customer_churn"
+  },
+  "model_register": {
+    "code": "ml.py; modeled.py",
+    "tests": "test_ml.py",
+    "processor_id": "proc_RNg283PYQO",
+    "module": "register_approved_churn_model"
+  },
+  "activation_export": {
+    "code": "exports.py; modeled.py",
+    "tests": "test_ml.py; test_end_to_end.py",
+    "processor_id": "proc_THr6W7ng5J",
+    "module": "export_consent_filtered_scores"
+  },
+  "report_export": {
+    "code": "exports.py; modeled.py",
+    "tests": "test_ml.py; test_end_to_end.py",
+    "processor_id": "proc_uwAuQ4IwoG",
+    "module": "serve_sales_reporting"
+  },
+  "profile_api": {
+    "code": "application.py; jobs/outbox.py",
+    "tests": "test_application.py",
+    "processor_id": "proc_JdSrpuLm7H",
+    "module": "updateCustomerProfile"
+  },
+  "behavior_api": {
+    "code": "application.py; jobs/outbox.py",
+    "tests": "test_application.py",
+    "processor_id": "proc_hVkJwN3rKM",
+    "module": "captureBehaviorEvent"
+  },
+  "order_commit": {
+    "code": "application.py; jobs/outbox.py",
+    "tests": "test_application.py",
+    "processor_id": "proc_0YuGq2K03Y",
+    "module": "commit_order_lifecycle"
+  },
+  "outbox_relay": {
+    "code": "application.py; jobs/outbox.py",
+    "tests": "test_application.py",
+    "processor_id": "proc_rJlLx1AwTo",
+    "module": "relay_order_events"
+  },
+  "audit": {
+    "code": "pipeline.py; epochs.py; storage.py",
+    "tests": "test_customer.py; test_adapters.py; test_end_to_end.py",
+    "processor_id": "proc_BTuhhECFqG",
+    "module": "record_pipeline_run"
+  },
+  "cursor_commit": {
+    "code": "pipeline.py; epochs.py; storage.py",
+    "tests": "test_customer.py; test_adapters.py; test_end_to_end.py",
+    "processor_id": "proc_GQhF914SlZ",
+    "module": "commit_ingestion_cursor"
+  },
+  "customer_publication": {
+    "code": "pipeline.py; epochs.py; storage.py",
+    "tests": "test_customer.py; test_adapters.py; test_end_to_end.py",
+    "processor_id": "proc_ayX5zANz9O",
+    "module": "commit_customer_publication"
+  },
+  "publish_epoch": {
+    "code": "pipeline.py; epochs.py; storage.py",
+    "tests": "test_customer.py; test_adapters.py; test_end_to_end.py",
+    "processor_id": "proc_udU4f93bLK",
+    "module": "publish_pipeline_epoch"
+  },
+  "daily_refresh": {
+    "code": "databricks.yml; jobs/; cadence.py",
+    "tests": "test_orchestration.py; test_end_to_end.py",
+    "processor_id": "proc_MxtH5pMC0K",
+    "module": "daily_refresh"
+  },
+  "source_refresh": {
+    "code": "databricks.yml; jobs/; cadence.py",
+    "tests": "test_orchestration.py; test_end_to_end.py",
+    "processor_id": "proc_Opa4pYbUjY",
+    "module": "source_refresh"
+  },
+  "continuous_refresh": {
+    "code": "databricks.yml; jobs/; cadence.py",
+    "tests": "test_orchestration.py; test_end_to_end.py",
+    "processor_id": "proc_OHIQNdX1t9",
+    "module": "continuous_refresh"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "name": "beyond-entity-mcp",
+  "version": "0.1.0",
+  "description": "Use Beyond Entity as persistent AI architecture memory through the local MCP server.",
+  "author": {
+    "name": "Beyond Entity"
+  },
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Beyond Entity",
+    "shortDescription": "Use Beyond Entity as AI architecture memory.",
+    "longDescription": "Recover project intent, architecture decisions, models, and data contracts from Beyond Entity through MCP, and preserve confirmed changes for future sessions and collaborators.",
+    "developerName": "Beyond Entity",
+    "category": "Productivity",
+    "capabilities": [],
+    "defaultPrompt": [
+      "Review the current Beyond Entity project design."
+    ]
+  },
+  "mcpServers": "./.mcp.json"
+}
