@@ -54,6 +54,36 @@ The marketplace is hosted in [beyond-entity/beyond-entity](https://github.com/be
 The plugin's MCP server runs `beyond-entity-mcp` (verified in step 2). After installing,
 start a new Claude Code session so the plugin's skill and MCP server load.
 
+### Use MCP through the plugin
+
+With `beyond-entity-mcp` installed and enabled, Claude Code loads the MCP connection from the plugin's [`.mcp.json`](plugins/beyond-entity-mcp/.mcp.json) and starts the local executable. The plugin supplies the connection configuration and skill; install the Beyond Entity desktop app first to provide the executable. See [Claude Code's plugin MCP documentation](https://code.claude.com/docs/en/plugins-reference#mcp-servers).
+
+You do not need to run `claude mcp add` or copy the skill separately when using this plugin. Choose either the plugin setup or the manual setup below to avoid duplicate connections.
+
+In Claude Code, use `/mcp` to inspect the connection, then ask in chat:
+
+```text
+Use the Beyond Entity MCP tools provided by the beyond-entity-mcp plugin to list
+my accessible projects. Report the project names and IDs without modifying anything.
+```
+
+Once you identify the project, you can request a specific MCP operation in natural language:
+
+```text
+Use Beyond Entity MCP to read the latest checkpoint for project <project name or ID>
+and summarize it without making changes.
+```
+
+The agent selects and calls the available MCP tools. You do not need to type their internal tool names. For the full architecture-memory workflow, invoke the bundled skill as well:
+
+```text
+/beyond-entity-mcp:architecture-memory Use project <project name or ID> as architecture
+memory. Read its latest checkpoint and the processor design for this endpoint before
+proposing code changes.
+```
+
+MCP tools can be used without explicitly invoking the skill. Use the skill for the design review, coding, synchronization, and handoff workflow described in step 6. If the plugin is installed but no MCP tools are available, check that it is enabled, confirm the executable is on PATH, and inspect the connection in `/mcp`.
+
 ### Option B — Manual (without the marketplace)
 
 Register the MCP server and skill separately.
@@ -116,13 +146,48 @@ Keep `SKILL.md` and `references/modeling-principles.md` together. If a skill alr
 
 Start a new Codex task after configuring the connection. If the skill does not appear, restart Codex. For supported discovery locations, see the [official skill documentation](https://developers.openai.com/codex/skills).
 
-## 6. Verify the connection and workflow
+## 6. Use the architecture-memory skill
 
-Ask your agent (Claude Code or Codex):
+The MCP server gives your agent access to Beyond Entity. The `architecture-memory` skill guides how it uses that access: recover the latest project context, review design before coding, and keep architecture and checkpoints aligned with completed work.
+
+After installing the skill, explicitly invoke it when starting or resuming architecture-related work. Enter the following in your agent's chat, followed by your request:
+
+| Client and installation | Skill invocation |
+| --- | --- |
+| Codex (manual skill installation above) | `$architecture-memory` |
+| Claude Code (marketplace plugin) | `/beyond-entity-mcp:architecture-memory` |
+| Claude Code (manual skill installation) | `/architecture-memory` |
+
+These are chat inputs, not terminal commands. See [Codex skill invocation](https://github.com/openai/codex/blob/main/codex-rs/app-server/README.md#skills) and [Claude Code skills](https://code.claude.com/docs/en/skills) for client details. The plugin and MCP server are named `beyond-entity-mcp`; the skill is named `architecture-memory`.
+
+For example, in Codex:
+
+```text
+$architecture-memory Use Beyond Entity project <project name> as architecture memory
+for this code repository. Read the latest checkpoint and relevant design, check for
+changes by other agents or people, and summarize the current context without
+modifying anything.
+```
+
+In Claude Code, replace `$architecture-memory` with the invocation for your installation. Replace `<project name>` with your actual project name; include a project ID if names are ambiguous.
+
+Use the same invocation with requests such as:
+
+- **Design from requirements:** “Create a design in Beyond Entity for these requirements, including entities, processors, and transformations. Summarize it for my review before implementing code.”
+- **Implement a reviewed design:** “Before changing this endpoint, read its current processor and transformations in Beyond Entity. Implement the reviewed behavior and verify it.”
+- **Bring architecture up to date:** “Compare these code changes with the current Beyond Entity design. Update the affected architecture to reflect the intended behavior, and record what was verified and what remains pending in a checkpoint.”
+
+The agent may also select the skill when a request matches its description. Explicit invocation makes your intent clear. The skill guides work during the task; it does not continuously monitor your repository or synchronize changes in the background.
+
+## 7. Verify the connection and workflow
+
+Invoke the skill as shown above, then ask your agent (Claude Code or Codex):
 
 > Use Beyond Entity as architecture memory. Identify my Beyond Entity project, read its latest checkpoint and relevant architecture documents, and summarize the current context without modifying anything.
 
 Check that the agent can access the intended project through MCP and reports actual project context. A missing checkpoint is valid for a new project; a connection failure is not evidence that the project has no history.
+
+Also ask the agent to confirm which `architecture-memory` skill file it loaded. A successful MCP connection alone does not confirm that the skill is installed or being used. If the skill is unavailable, check its installation directory and start a new session.
 
 Then try a focused design review:
 

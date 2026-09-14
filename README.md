@@ -1,10 +1,12 @@
-# Beyond Entity — AI Architecture Memory
+# Beyond Entity — Architecture Memory for AI Coding Agents
 
 [English](README.md) · [한국어](README_ko.md) · [日本語](README_ja.md)
 
 Beyond Entity gives AI agents and engineers a persistent, shared architecture memory: system intent, design decisions, models, data contracts, processor transformations, and implementation context that can be carried from one work session to the next.
 
 The **beyond-entity-mcp** plugin connects this architecture memory to an AI coding workflow through the local Beyond Entity MCP server. Its skill guides an agent to recover context, check the design before changing code, keep architecture aligned with verified implementation changes, and leave a checkpoint for the next agent or human.
+
+Use Beyond Entity for **software architecture modeling**, **architecture diagrams**, **data lineage**, and **design-to-code workflows** with Claude Code or Codex through MCP (Model Context Protocol).
 
 [Download Beyond Entity](https://beyondentity.com/en/download) · [Installation guide](INSTALL.md) · [User guide](docs/USER_GUIDE.md) ([한국어](docs/USER_GUIDE_ko.md) · [日本語](docs/USER_GUIDE_ja.md)) · [Sample projects](samples/README.md) · [Website](https://beyondentity.com) · [GitHub](https://github.com/beyond-entity/beyond-entity)
 
@@ -45,6 +47,14 @@ Collapsing a box changes its presentation; it does not mean the entity or proces
 [![Satellite View with compact processors and selectively expanded attributes](assets/screenshots/table-q-satellite-view.png)](https://canvas.beyondentity.com/viewsample?sample_project_file_id=rXxLCaaJ1nEVN9CKbneL)
 
 *Keep the overall canvas compact and expand selected entities or processors to inspect their attributes and mappings. Click the image to open the viewer.*
+
+## Comparing Beyond Entity and Archify
+
+Exploring AI architecture diagram tools such as [Archify](https://github.com/tt-a1i/archify)? Archify generates interactive HTML/SVG diagrams from code or system descriptions, with snapshot comparisons and authored route tracing.
+
+Beyond Entity focuses on persistent **architecture memory for AI coding agents**: editable entities, attributes, processor transformations, ERDs, and data lineage, with checkpoints that preserve design and implementation context across sessions. Humans review the model in the app; agents read and update it through MCP.
+
+When comparing tools, consider whether your next task is to present an interactive system diagram or maintain a shared design that agents consult and update while coding. Explore the [Table Q design and implementation](samples/table-q/README.md) to see the BE workflow. These are independent projects; this repository does not provide an Archify integration or automatic import.
 
 ## Get started
 

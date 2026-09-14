@@ -1,10 +1,12 @@
-# Beyond Entity — AI Architecture Memory
+# Beyond Entity — Architecture Memory for AI Coding Agents
 
 [English](README.md) · [한국어](README_ko.md) · [日本語](README_ja.md)
 
 Beyond Entity は、AI エージェントとエンジニアが共有する永続的な Architecture Memory です。システムの意図、設計上の決定、モデル、データ契約、Processor の Transformation、実装のコンテキストを次の作業セッションへ引き継げます。
 
 **beyond-entity-mcp** プラグインは、ローカルの Beyond Entity MCP サーバーを通じて、このメモリを AI によるコーディングに接続します。付属のスキルは、コンテキストの復元、コード変更前の設計確認、検証済みの実装変更に合わせた設計更新、次のエージェントや人への Checkpoint 作成を案内します。
+
+Beyond Entity は MCP（Model Context Protocol）を通じて、Claude Code や Codex とともに **ソフトウェアアーキテクチャのモデリング**、**アーキテクチャ図**、**データリネージ**、**設計に基づくコーディング**に利用できます。
 
 [Beyond Entity をダウンロード](https://beyondentity.com/en/download) · [インストールガイド（英語）](INSTALL.md) · [ユーザーガイド](docs/USER_GUIDE_ja.md) · [サンプル（英語）](samples/README.md) · [ウェブサイト](https://beyondentity.com) · [GitHub](https://github.com/beyond-entity/beyond-entity)
 
@@ -45,6 +47,14 @@ Beyond Entity は、AI エージェントとエンジニアが共有する永続
 [![コンパクトな Processor と選択的に展開した Attribute を示す Satellite View](assets/screenshots/table-q-satellite-view.png)](https://canvas.beyondentity.com/viewsample?sample_project_file_id=rXxLCaaJ1nEVN9CKbneL)
 
 *Canvas 全体をコンパクトに保ち、必要な Entity や Processor だけを展開して Attribute とマッピングを確認できます。画像をクリックすると Viewer が開きます。*
+
+## Beyond Entity と Archify を比較する
+
+[Archify](https://github.com/tt-a1i/archify) のような AI アーキテクチャ図ツールを検討していますか？ Archify はコードやシステムの説明から対話型 HTML/SVG 図を生成し、スナップショット比較やモデルに定義された経路の追跡をサポートします。
+
+Beyond Entity は **AI コーディングエージェントのための Architecture Memory** に重点を置いています。編集可能な Entity、Attribute、Processor Transformation、ERD、データリネージに加え、Checkpoint で設計と実装のコンテキストをセッション間で引き継ぎます。人はアプリでモデルをレビューし、エージェントは MCP で読み取り、更新します。
+
+ツールを比較する際は、対話型システム図を説明・共有したいのか、コーディング中にエージェントが参照・更新する共有設計を維持したいのかを検討してください。[Table Q の設計と実装](samples/table-q/README.md)で BE の流れを確認できます。両者は独立したプロジェクトであり、このリポジトリは Archify 連携や自動インポートを提供していません。
 
 ## 始め方
 

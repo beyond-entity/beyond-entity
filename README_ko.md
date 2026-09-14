@@ -1,10 +1,12 @@
-# Beyond Entity — AI Architecture Memory
+# Beyond Entity — Architecture Memory for AI Coding Agents
 
 [English](README.md) · [한국어](README_ko.md) · [日本語](README_ja.md)
 
 Beyond Entity는 AI 에이전트와 엔지니어가 함께 사용하는 지속적인 Architecture Memory입니다. 시스템의 의도, 설계 결정, 모델, 데이터 계약, Processor의 Transformation, 구현 맥락을 다음 작업 세션으로 이어갈 수 있습니다.
 
 **beyond-entity-mcp** 플러그인은 로컬 Beyond Entity MCP 서버를 통해 이 메모리를 AI 코딩 작업과 연결합니다. 함께 제공되는 스킬은 에이전트가 맥락을 복구하고, 코드 변경 전에 설계를 확인하며, 검증된 구현 변경에 맞춰 설계를 갱신하고, 다음 에이전트나 사람을 위한 Checkpoint를 남기도록 안내합니다.
+
+Beyond Entity는 MCP(Model Context Protocol)를 통해 Claude Code 또는 Codex와 함께 **소프트웨어 아키텍처 모델링**, **아키텍처 다이어그램**, **데이터 리니지**, **설계 기반 코딩**에 사용할 수 있습니다.
 
 [Beyond Entity 다운로드](https://beyondentity.com/en/download) · [설치 가이드(영문)](INSTALL.md) · [사용자 가이드](docs/USER_GUIDE_ko.md) · [샘플 프로젝트(영문)](samples/README.md) · [웹사이트](https://beyondentity.com) · [GitHub](https://github.com/beyond-entity/beyond-entity)
 
@@ -45,6 +47,14 @@ Beyond Entity는 AI 에이전트와 엔지니어가 함께 사용하는 지속�
 [![접힌 Processor와 선택적으로 펼친 Attribute가 있는 Satellite View](assets/screenshots/table-q-satellite-view.png)](https://canvas.beyondentity.com/viewsample?sample_project_file_id=rXxLCaaJ1nEVN9CKbneL)
 
 *전체 Canvas는 간결하게 유지하고 필요한 Entity나 Processor만 펼쳐 Attribute와 매핑을 확인하세요. 이미지를 클릭하면 Viewer가 열립니다.*
+
+## Beyond Entity와 Archify 비교하기
+
+[Archify](https://github.com/tt-a1i/archify) 같은 AI 아키텍처 다이어그램 도구를 살펴보고 계신가요? Archify는 코드나 시스템 설명에서 대화형 HTML/SVG 다이어그램을 생성하고, 스냅샷 비교와 모델에 정의된 경로 추적을 지원합니다.
+
+Beyond Entity는 **AI 코딩 에이전트를 위한 Architecture Memory**에 초점을 둡니다. 편집 가능한 Entity, Attribute, Processor Transformation, ERD, 데이터 리니지와 함께 Checkpoint로 설계·구현 맥락을 세션 간에 이어갑니다. 사람은 앱에서 모델을 리뷰하고, 에이전트는 MCP로 읽고 수정합니다.
+
+도구를 비교할 때는 대화형 시스템 다이어그램을 설명·공유하려는지, 코딩 중 에이전트가 참조하고 갱신할 공유 설계를 유지하려는지 살펴보세요. [Table Q 설계와 구현](samples/table-q/README.md)에서 BE 작업 흐름을 확인할 수 있습니다. 두 도구는 독립적인 프로젝트이며, 이 저장소는 Archify 연동이나 자동 가져오기를 제공하지 않습니다.
 
 ## 시작하기
 
