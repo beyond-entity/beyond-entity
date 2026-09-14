@@ -1,5 +1,7 @@
 # Beyond Entity — AI Architecture Memory
 
+[English](README.md) · [한국어](README_ko.md) · [日本語](README_ja.md)
+
 Beyond Entity gives AI agents and engineers a persistent, shared architecture memory: system intent, design decisions, models, data contracts, processor transformations, and implementation context that can be carried from one work session to the next.
 
 The **beyond-entity-mcp** plugin connects this architecture memory to an AI coding workflow through the local Beyond Entity MCP server. Its skill guides an agent to recover context, check the design before changing code, keep architecture aligned with verified implementation changes, and leave a checkpoint for the next agent or human.
@@ -94,6 +96,9 @@ The guides include `.bemdl` download links. Table Q includes the [Codex-generate
 ```text
 .
 ├── README.md
+├── README_ko.md
+├── README_ja.md
+├── docs/                              # User guides in English, Korean, and Japanese
 ├── INSTALL.md
 ├── assets/screenshots/                 # README screenshots
 ├── .claude-plugin/marketplace.json      # Claude Code plugin marketplace
