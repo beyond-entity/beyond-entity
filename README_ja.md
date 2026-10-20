@@ -12,14 +12,33 @@ Beyond Entity は MCP（Model Context Protocol）を通じて、Claude Code や 
 
 ## 主なアップグレード
 
+今回の更新で、**eGovFrame（韓国の電子政府フレームワーク）のアーキテクチャ対応を強化しました**。Controller–Service–DAO/Mapper のレイヤー構造とデータフローをコードから抽出し、MSA や AI/RAG のサンプルで確認できます。
+
 - **セキュリティ脆弱性チェックを追加:** セキュリティ事前チェックの重大度、対応状況、ソース位置、根拠となる経路、関連するアーキテクチャオブジェクトを確認できます。
-- **Spring Code Parser を追加:** [`spring_code_parser/`](spring_code_parser/) フォルダーに、Spring 系のソースコードを解析してアーキテクチャを抽出するコードを追加しました。既存の Java/Spring Boot・eGovFrame コードから Controller、Service、Data Access レイヤーを含むアーキテクチャとデータリネージを抽出します。[パーサーガイド](spring_code_parser/README_ja.md)と[サンプル（英語）](samples/spring-framework/README.md)を参照してください。
+- **Spring Code Parser を追加:** [`spring_code_parser/`](spring_code_parser/) フォルダーに、Spring 系のソースコードを解析してアーキテクチャを抽出する実行パッケージを追加しました。既存の Java/Spring Boot・eGovFrame コードから Controller、Service、Data Access レイヤーを含むアーキテクチャとデータリネージを抽出します。[パーサーガイド](spring_code_parser/README_ja.md)と[サンプル（英語）](samples/spring-framework/README.md)を参照してください。
 - **Checkpoint ごとの変更内容を表示:** 各 Checkpoint の変更オブジェクトから、その区間で追加・更新・削除された内容を確認できます。追加・更新されたオブジェクトは最終値、削除されたオブジェクトは削除直前の値を表示します。
 - **MCP による要件ヒアリングとプロジェクト予算分析:** Claude Code または Codex を MCP で Beyond Entity に接続すると、対話によるヒアリングでプロジェクト要件を収集・具体化し、収集した要件と合意した前提に基づいてプロジェクト予算を分析できます。
 
-[![Table Q の Web、API、データベース間の Attribute Lineage](assets/screenshots/table-q-workflow.png)](https://canvas.beyondentity.com/viewsample?sample_project_file_id=rXxLCaaJ1nEVN9CKbneL)
+[![Spring Petclinic の Controller・Data Access レイヤーとデータベース属性の接続](assets/screenshots/spring-boot-support.png)](samples/spring-framework/README.md)
 
-*Web 操作から API の Transformation を経てデータベースの Attribute まで追跡できます。画像をクリックすると Viewer で Table Q を探索できます。*
+*Spring コードから抽出した Controller・Repository とデータベースの Entity・Attribute の接続を確認できます。画像をクリックすると Spring Boot・eGovFrame サンプルガイドが開きます。*
+
+<table>
+  <tr>
+    <th>セキュリティ脆弱性チェック</th>
+    <th>Checkpoint ごとの変更内容</th>
+  </tr>
+  <tr>
+    <td width="50%"><a href="assets/screenshots/security-findings.png"><img src="assets/screenshots/security-findings.png" width="440" alt="Security finding details with severity, source location, related processor, and CWE mappings"></a></td>
+    <td width="50%"><a href="assets/screenshots/checkpoint-changes.png"><img src="assets/screenshots/checkpoint-changes.png" width="440" alt="Checkpoint changed objects with an expanded entity showing its recorded values"></a></td>
+  </tr>
+  <tr>
+    <td>事前チェック結果の重大度、根拠、ソース位置、関連オブジェクトを確認できます。</td>
+    <td>Checkpoint 区間ごとの追加・更新・削除を確認し、オブジェクトを展開して記録された値を参照できます。</td>
+  </tr>
+</table>
+
+*画像をクリックすると原寸で表示できます。セキュリティの検出結果はレビューのための事前チェック資料です。*
 
 ## 設計からでも既存コードからでも始められる
 
@@ -97,6 +116,10 @@ MCP 実行ファイルはデスクトップアプリが提供します。この�
 
 | サンプル | 確認できる内容 | リソース |
 | --- | --- | --- |
+| **Spring Petclinic** | Spring Boot MVC Controller・Repository と H2・MySQL・PostgreSQL のリネージ | [サンプルガイド（英語）](samples/spring-framework/README.md) |
+| **eGovFrame MSA education** | eGovFrame MSA の Controller・Service・Data Access レイヤーと RabbitMQ のフロー | [サンプルガイド（英語）](samples/spring-framework/README.md) |
+| **eGovFrame AI/RAG** | eGovFrame AI/RAG、Spring AI、Redis・PostgreSQL、AI レビューと誤検出補正 | [サンプルガイド（英語）](samples/spring-framework/README.md) |
+| **Payment platform** | 決済マイクロサービス、ユースケース、JPA Repository、AI レビューと誤検出補正 | [サンプルガイド（英語）](samples/spring-framework/README.md) |
 | **Table Q by Codex** | 飲食店の待ち行列、テーブル状態、複数店舗の状況管理と Codex による実装 | [プロジェクトガイド](samples/table-q/README.md) · [Viewer](https://canvas.beyondentity.com/viewsample?sample_project_file_id=rXxLCaaJ1nEVN9CKbneL) |
 | **eCommerce data lake** | Oracle → Google Cloud Storage → BigQuery の Lineage と売上・商品・顧客セッションの SQL 集計 | [プロジェクトガイド](samples/ecommerce/README.md) · [Viewer](https://canvas.beyondentity.com/viewsample?sample_project_file_id=BWBDcESJ4tJcGkZqvRwL) |
 | **Databricks Lakehouse** | Lakehouse 設計、Python ソース、ジョブ、テスト、Codex の会話要約 | [プロジェクトガイド](samples/databricks/README.md) |
@@ -120,30 +143,36 @@ Beyond Entity は **Controller Layer**、**Service Layer**、**Data Access Layer
 
 ```text
 .
-├── README.md
-├── README_ko.md
-├── README_ja.md
-├── docs/                              # User guides in English, Korean, and Japanese
-├── INSTALL.md
-├── assets/screenshots/                 # README screenshots
-├── .claude-plugin/marketplace.json      # Claude Code plugin marketplace
-├── plugins/
-│   └── beyond-entity-mcp/
-│       ├── .claude-plugin/plugin.json   # Claude Code plugin manifest
-│       ├── .codex-plugin/plugin.json    # Codex plugin manifest
-│       ├── .mcp.json                    # MCP server (command: beyond-entity-mcp)
-│       └── skills/architecture-memory/
-│           ├── SKILL.md
-│           └── references/modeling-principles.md
+├── README.md, README_ko.md, README_ja.md # 3 言語の概要
+├── INSTALL.md                          # デスクトップ・MCP・スキル・パーサーの設定
+├── LICENSE
+├── docs/                               # 3 言語のユーザーガイド
+├── assets/screenshots/                 # README の画像
+├── .claude-plugin/marketplace.json     # Claude Code plugin marketplace
+├── plugins/beyond-entity-mcp/
+│   ├── .claude-plugin/plugin.json      # Claude Code plugin manifest
+│   ├── .codex-plugin/plugin.json       # Codex plugin manifest
+│   ├── .mcp.json                       # MCP server connection
+│   └── skills/architecture-memory/
+│       ├── SKILL.md
+│       └── references/modeling-principles.md
+├── spring_code_parser/                 # Java/Spring 解析の実行パッケージ
+│   ├── README.md, README_ko.md, README_ja.md
+│   ├── INSTALL.md, SECURITY.md
+│   ├── bin/be-parser                   # macOS/Linux launcher
+│   ├── bin/be-parser.cmd               # Windows launcher
+│   ├── lib/be-extractor.jar            # パーサー実行ファイル（Java 21+）
+│   ├── install.sh
+│   └── be-extractor.example.properties
 └── samples/
     ├── README.md
-    ├── table-q/
-    │   ├── README.md
-    │   ├── src/                         # Codex-generated implementation
-    │   └── db/                          # Initial schema and schema verification
+    ├── spring-framework/               # Petclinic, eGovFrame MSA, AI/RAG, payments
+    │   ├── README.md                   # ガイド・オンラインモデル一覧へのリンク
+    │   └── images/                     # アーキテクチャ・変更内容・事前チェックの画像
+    ├── table-q/                        # Guide, source, and database schema
     ├── ecommerce/README.md
-    ├── databricks/                      # Python package, jobs, tests, architecture notes
-    ├── snowflake/                       # SQL, Python pipelines, Airflow DAGs, tests
+    ├── databricks/                     # Python, jobs, tests, architecture notes
+    ├── snowflake/                      # SQL, Python pipelines, DAGs, tests
     └── COMPARISON.md
 ```
 
