@@ -29,8 +29,8 @@ Beyond Entity는 MCP(Model Context Protocol)를 통해 Claude Code 또는 Codex�
     <th>Checkpoint별 변경 내역</th>
   </tr>
   <tr>
-    <td width="50%"><a href="assets/screenshots/security-findings.png"><img src="assets/screenshots/security-findings.png" width="440" alt="Security finding details with severity, source location, related processor, and CWE mappings"></a></td>
-    <td width="50%"><a href="assets/screenshots/checkpoint-changes.png"><img src="assets/screenshots/checkpoint-changes.png" width="440" alt="Checkpoint changed objects with an expanded entity showing its recorded values"></a></td>
+    <td width="50%"><a href="assets/screenshots/security-findings-ko.png"><img src="assets/screenshots/security-findings-ko.png" width="440" alt="보안 취약점 점검 결과의 심각도, 소스 위치, 흐름 경로와 연결된 프로세서"></a></td>
+    <td width="50%"><a href="assets/screenshots/checkpoint-changes-ko.png"><img src="assets/screenshots/checkpoint-changes-ko.png" width="440" alt="체크포인트별 변경 객체 목록과 펼쳐진 객체의 상세 값"></a></td>
   </tr>
   <tr>
     <td>보안 사전점검 결과의 심각도, 근거, 소스 위치와 관련 객체를 확인합니다.</td>
