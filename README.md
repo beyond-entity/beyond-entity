@@ -13,13 +13,13 @@ Use Beyond Entity for **software architecture modeling**, **architecture diagram
 ## Recent upgrades
 
 - **Security vulnerability checks:** review security pre-check findings with severity, status, source locations, evidence paths, and related architecture objects.
-- **Spring Code Parser:** the [`spring_code_parser/`](spring_code_parser/) folder now includes code that parses Spring-family source code and extracts its architecture. Extract architecture and data lineage from existing Java/Spring Boot and eGovFrame code, including Controller, Service, and Data Access layers. See the [parser guide](spring_code_parser/README.md) and [framework samples](samples/spring-framework/README.md).
+- **Spring Code Parser:** the [`spring_code_parser/`](spring_code_parser/) folder now includes a ready-to-run parser package that extracts architecture and data lineage from existing Java/Spring Boot and eGovFrame code, including Controller, Service, and Data Access layers. See the [parser guide](spring_code_parser/README.md) and [framework samples](samples/spring-framework/README.md).
 - **Changes in each Checkpoint:** open a checkpoint's changed objects to inspect additions, updates, and deletions within its interval. Added and updated objects show their final values; deleted objects show their values immediately before deletion.
 - **Requirements interviews and project budget analysis through MCP:** connect Claude Code or Codex to Beyond Entity through MCP to collect and refine project requirements through an interview, then analyze the project budget based on the collected requirements and agreed assumptions.
 
-[![Table Q web, API, and database attribute lineage](assets/screenshots/table-q-workflow.png)](https://canvas.beyondentity.com/viewsample?sample_project_file_id=rXxLCaaJ1nEVN9CKbneL)
+[![Spring Petclinic architecture with controller and data access layers connected to database attributes](assets/screenshots/spring-boot-support.png)](samples/spring-framework/README.md)
 
-*Trace a workflow from web interactions through API transformations to database attributes. Click the image to explore Table Q in the viewer.*
+*Explore architecture extracted from Spring code: Petclinic controllers and repositories connected to database entities and attributes. Click the image for the Spring Boot and eGovFrame sample guide.*
 
 ## Start from a design or from existing code
 
@@ -97,6 +97,10 @@ The desktop app supplies the MCP executable. This repository supplies its plugin
 
 | Sample | What to explore | Resources |
 | --- | --- | --- |
+| **Spring Petclinic** | Spring Boot MVC controllers, repositories, and lineage to H2, MySQL, and PostgreSQL models. Extracted with Code Parser. | [Framework guide](samples/spring-framework/README.md#spring-petclinic) · [Online samples](https://beyondentity.com/en/sample-projects) |
+| **eGovFrame MSA education** | Controller, service, and data access layers across microservices, including RabbitMQ message flows. | [Framework guide](samples/spring-framework/README.md#egovframe-msa-education) · [Online samples](https://beyondentity.com/en/sample-projects) |
+| **eGovFrame AI/RAG** | Spring AI components, Redis/PostgreSQL, checkpoints, and security pre-check findings; includes AI review and false-positive corrections. | [Framework guide](samples/spring-framework/README.md#egovframe-airag) · [Online samples](https://beyondentity.com/en/sample-projects) |
+| **Payment platform** | Payment microservices, application use cases, JPA repositories, and database lineage; includes AI review and false-positive corrections. | [Framework guide](samples/spring-framework/README.md#payment-platform) · [Online samples](https://beyondentity.com/en/sample-projects) |
 | **Table Q by Codex** | Restaurant and café queue management, table status, and visibility across stores, with a Codex-generated implementation. | [Project guide](samples/table-q/README.md) · [Codex viewer](https://canvas.beyondentity.com/viewsample?sample_project_file_id=rXxLCaaJ1nEVN9CKbneL) |
 | **eCommerce data lake** | Data lineage from Oracle through Google Cloud Storage to BigQuery, with SQL aggregations for sales, product performance, and customer sessions. | [Project guide](samples/ecommerce/README.md) · [Viewer](https://canvas.beyondentity.com/viewsample?sample_project_file_id=BWBDcESJ4tJcGkZqvRwL) |
 | **Databricks Lakehouse** | Lakehouse architecture, Python source, jobs, tests, and Codex conversation notes. | [Project guide](samples/databricks/README.md) |
@@ -118,30 +122,36 @@ Beyond Entity now represents **Controller Layer**, **Service Layer**, and **Data
 
 ```text
 .
-├── README.md
-├── README_ko.md
-├── README_ja.md
-├── docs/                              # User guides in English, Korean, and Japanese
-├── INSTALL.md
+├── README.md, README_ko.md, README_ja.md # Overview in three languages
+├── INSTALL.md                          # Desktop, MCP, skill, and parser setup
+├── LICENSE
+├── docs/                               # User guides in three languages
 ├── assets/screenshots/                 # README screenshots
-├── .claude-plugin/marketplace.json      # Claude Code plugin marketplace
-├── plugins/
-│   └── beyond-entity-mcp/
-│       ├── .claude-plugin/plugin.json   # Claude Code plugin manifest
-│       ├── .codex-plugin/plugin.json    # Codex plugin manifest
-│       ├── .mcp.json                    # MCP server (command: beyond-entity-mcp)
-│       └── skills/architecture-memory/
-│           ├── SKILL.md
-│           └── references/modeling-principles.md
+├── .claude-plugin/marketplace.json     # Claude Code plugin marketplace
+├── plugins/beyond-entity-mcp/
+│   ├── .claude-plugin/plugin.json      # Claude Code plugin manifest
+│   ├── .codex-plugin/plugin.json       # Codex plugin manifest
+│   ├── .mcp.json                       # MCP server connection
+│   └── skills/architecture-memory/
+│       ├── SKILL.md
+│       └── references/modeling-principles.md
+├── spring_code_parser/                 # Ready-to-run Java/Spring analyzer
+│   ├── README.md, README_ko.md, README_ja.md
+│   ├── INSTALL.md, SECURITY.md
+│   ├── bin/be-parser                   # macOS/Linux launcher
+│   ├── bin/be-parser.cmd               # Windows launcher
+│   ├── lib/be-extractor.jar            # Parser executable (Java 21+)
+│   ├── install.sh
+│   └── be-extractor.example.properties
 └── samples/
     ├── README.md
-    ├── table-q/
-    │   ├── README.md
-    │   ├── src/                         # Codex-generated implementation
-    │   └── db/                          # Initial schema and schema verification
+    ├── spring-framework/               # Petclinic, eGovFrame MSA, AI/RAG, payments
+    │   ├── README.md                   # Guide and online model catalog link
+    │   └── images/                     # Architecture, checkpoints, security findings
+    ├── table-q/                        # Guide, source, and database schema
     ├── ecommerce/README.md
-    ├── databricks/                      # Python package, jobs, tests, architecture notes
-    ├── snowflake/                       # SQL, Python pipelines, Airflow DAGs, tests
+    ├── databricks/                     # Python, jobs, tests, architecture notes
+    ├── snowflake/                      # SQL, Python pipelines, DAGs, tests
     └── COMPARISON.md
 ```
 
