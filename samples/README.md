@@ -12,6 +12,12 @@ These guides introduce Beyond Entity sample files and link to their online viewe
 
 Preview the architecture in a browser, or download a `.bemdl` file and open it in [Beyond Entity](https://beyondentity.com/en/download). To work with an AI agent, follow the [installation guide](../INSTALL.md) and ask it to inspect the selected project through MCP.
 
+## Spring Boot and eGovFrame framework samples
+
+Beyond Entity now represents **Controller Layer**, **Service Layer**, and **Data Access Layer** responsibilities. Explore code-derived architecture, attribute-level lineage, checkpoints, and security pre-check findings in four samples: **spring-petclinic**, **egovframe-msa-edu**, **egovframe-ai-rag**, and **payment-platform**. The AI/RAG and payment samples also include AI review and false-positive corrections recorded in checkpoints.
+
+[Framework sample guide and screenshots](spring-framework/README.md) · [Open the sample catalog and downloads](https://beyondentity.com/en/sample-projects)
+
 ## Reading the diagrams
 
 - **Default model view:** all attributes are expanded for detailed inspection.

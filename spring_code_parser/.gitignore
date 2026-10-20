@@ -1,0 +1,4 @@
+# local outputs and Beyond Entity project files
+be-parser-out/
+*.bemdl
+.DS_Store

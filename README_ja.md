@@ -10,6 +10,13 @@ Beyond Entity は MCP（Model Context Protocol）を通じて、Claude Code や 
 
 [Beyond Entity をダウンロード](https://beyondentity.com/en/download) · [インストールガイド（英語）](INSTALL.md) · [ユーザーガイド](docs/USER_GUIDE_ja.md) · [サンプル（英語）](samples/README.md) · [ウェブサイト](https://beyondentity.com) · [GitHub](https://github.com/beyond-entity/beyond-entity)
 
+## 主なアップグレード
+
+- **セキュリティ脆弱性チェックを追加:** セキュリティ事前チェックの重大度、対応状況、ソース位置、根拠となる経路、関連するアーキテクチャオブジェクトを確認できます。
+- **Spring Code Parser を追加:** [`spring_code_parser/`](spring_code_parser/) フォルダーに、Spring 系のソースコードを解析してアーキテクチャを抽出するコードを追加しました。既存の Java/Spring Boot・eGovFrame コードから Controller、Service、Data Access レイヤーを含むアーキテクチャとデータリネージを抽出します。[パーサーガイド](spring_code_parser/README_ja.md)と[サンプル（英語）](samples/spring-framework/README.md)を参照してください。
+- **Checkpoint ごとの変更内容を表示:** 各 Checkpoint の変更オブジェクトから、その区間で追加・更新・削除された内容を確認できます。追加・更新されたオブジェクトは最終値、削除されたオブジェクトは削除直前の値を表示します。
+- **MCP による要件ヒアリングとプロジェクト予算分析:** Claude Code または Codex を MCP で Beyond Entity に接続すると、対話によるヒアリングでプロジェクト要件を収集・具体化し、収集した要件と合意した前提に基づいてプロジェクト予算を分析できます。
+
 [![Table Q の Web、API、データベース間の Attribute Lineage](assets/screenshots/table-q-workflow.png)](https://canvas.beyondentity.com/viewsample?sample_project_file_id=rXxLCaaJ1nEVN9CKbneL)
 
 *Web 操作から API の Transformation を経てデータベースの Attribute まで追跡できます。画像をクリックすると Viewer で Table Q を探索できます。*
@@ -100,6 +107,14 @@ MCP 実行ファイルはデスクトップアプリが提供します。この�
 各ガイドには `.bemdl` のダウンロードリンクがあります。Table Q には [Codex が生成した実装](samples/table-q/src/)とデータベーススキーマが含まれています。実行前に [Table Q のセットアップ案内](samples/table-q/README.md)を確認してください。
 
 [その他のサンプル →](https://beyondentity.com/en/sample-projects)
+
+### Spring Boot・eGovFrame のレイヤー表現を追加
+
+Beyond Entity は **Controller Layer**、**Service Layer**、**Data Access Layer** などのフレームワークの役割を表現し、アプリケーションモジュール、データストア、属性レベルのリネージを一緒に確認できます。
+
+[サンプルガイドと画面（英語）](samples/spring-framework/README.md)では **spring-petclinic**、**egovframe-msa-edu**、**egovframe-ai-rag**、**payment-platform** の構造、Checkpoint、セキュリティ事前チェックを紹介します。AI/RAG と決済のサンプルは Code Parser の抽出後に AI がレビューして誤検出を補正したもので、変更記録を Checkpoint で確認できます。
+
+[オンライン表示・モデルのダウンロード](https://beyondentity.com/en/sample-projects)。
 
 ## リポジトリ構成
 

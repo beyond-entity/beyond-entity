@@ -10,6 +10,13 @@ Beyond Entity는 MCP(Model Context Protocol)를 통해 Claude Code 또는 Codex�
 
 [Beyond Entity 다운로드](https://beyondentity.com/en/download) · [설치 가이드(영문)](INSTALL.md) · [사용자 가이드](docs/USER_GUIDE_ko.md) · [샘플 프로젝트(영문)](samples/README.md) · [웹사이트](https://beyondentity.com) · [GitHub](https://github.com/beyond-entity/beyond-entity)
 
+## 주요 업그레이드
+
+- **보안 취약점 점검 추가:** 보안 사전점검 결과의 심각도, 처리 상태, 소스 위치, 근거 경로와 연결된 아키텍처 객체를 확인할 수 있습니다.
+- **Spring Code Parser 추가:** [`spring_code_parser/`](spring_code_parser/) 폴더에 Spring 계열 소스코드를 파싱해 아키텍처를 추출하는 코드를 추가했습니다. 기존 Java/Spring Boot·전자정부프레임워크 코드에서 Controller, Service, Data Access 계층을 포함한 아키텍처와 데이터 리니지를 추출합니다. [파서 가이드](spring_code_parser/README_ko.md)와 [프레임워크 샘플(영문)](samples/spring-framework/README.md)을 참고하세요.
+- **Checkpoint별 변경 내역 조회:** 각 Checkpoint의 변경 객체에서 해당 구간에 추가·수정·삭제된 부분을 확인할 수 있습니다. 추가·수정 객체는 최종 값을, 삭제 객체는 삭제 직전 값을 표시합니다.
+- **MCP를 통한 요구사항 인터뷰·프로젝트 예산 분석:** Claude Code 또는 Codex를 Beyond Entity에 MCP로 연결하면, 인터뷰를 통해 프로젝트 요구사항을 수집·구체화하고 수집한 요구사항과 합의한 가정을 바탕으로 프로젝트 예산 분석을 진행할 수 있습니다.
+
 [![Table Q의 Web, API, 데이터베이스 Attribute Lineage](assets/screenshots/table-q-workflow.png)](https://canvas.beyondentity.com/viewsample?sample_project_file_id=rXxLCaaJ1nEVN9CKbneL)
 
 *웹 상호작용에서 API Transformation을 거쳐 데이터베이스 Attribute까지 흐름을 추적하세요. 이미지를 클릭하면 Viewer에서 Table Q를 탐색할 수 있습니다.*
@@ -100,6 +107,14 @@ MCP 실행 파일은 데스크톱 앱에서 제공합니다. 이 저장소는 �
 가이드에는 `.bemdl` 다운로드 링크가 있습니다. Table Q에는 [Codex가 생성한 구현](samples/table-q/src/)과 데이터베이스 스키마가 포함되어 있습니다. 실행 전에 [Table Q 설정 안내](samples/table-q/README.md)를 확인하세요.
 
 [더 많은 샘플 →](https://beyondentity.com/en/sample-projects)
+
+### Spring Boot·전자정부프레임워크 계층 표현 추가
+
+Beyond Entity에 **Controller Layer**, **Service Layer**, **Data Access Layer** 등 프레임워크 역할을 표현하는 구조가 추가되었습니다. 애플리케이션 모듈에서 데이터 저장소와 속성 수준 리니지까지 함께 살펴볼 수 있습니다.
+
+[프레임워크 샘플 가이드와 화면(영문)](samples/spring-framework/README.md)에서 **spring-petclinic**, **egovframe-msa-edu**, **egovframe-ai-rag**, **payment-platform**의 계층 구조, Checkpoint, 보안 사전점검 사례를 소개합니다. AI/RAG와 결제 샘플은 Code Parser 추출 후 AI가 검토·오탐 보정한 버전이며, 보정 기록은 Checkpoint에서 확인할 수 있습니다.
+
+[샘플 온라인 조회·모델 다운로드](https://beyondentity.com/en/sample-projects).
 
 ## 저장소 구조
 

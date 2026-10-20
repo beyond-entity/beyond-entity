@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+# be-parser: run the be-code-parser CLI without typing "java -jar".
+#   be-parser run ~/src/my-app --project PxxxxxxxxxxxX
+#   be-parser serve
+# Finds the jar next to this script (installed: ../lib/be-extractor.jar; source tree: ../extractor-cli/target/),
+# or at $BE_PARSER_JAR. Java from $JAVA_HOME or PATH. Heap: $BE_PARSER_HEAP, else java.heap of the user settings
+# (~/.be-parser/config.properties), else 3g.
+set -euo pipefail
+src="${BASH_SOURCE[0]}"
+while [ -L "$src" ]; do
+  dir="$(cd -P "$(dirname "$src")" && pwd)"
+  src="$(readlink "$src")"
+  [[ $src != /* ]] && src="$dir/$src"
+done
+here="$(cd -P "$(dirname "$src")" && pwd)"
+jar="${BE_PARSER_JAR:-}"
+if [ -z "$jar" ]; then
+  for c in "$here/../lib/be-extractor.jar" "$here/../extractor-cli/target/be-extractor.jar"; do
+    if [ -f "$c" ]; then jar="$c"; break; fi
+  done
+fi
+if [ -z "$jar" ] || [ ! -f "$jar" ]; then
+  echo "be-parser: be-extractor.jar not found (build with 'mvn -q clean install -DskipTests' or set BE_PARSER_JAR)" >&2
+  exit 1
+fi
+if [ -n "${JAVA_HOME:-}" ] && [ -x "$JAVA_HOME/bin/java" ]; then java="$JAVA_HOME/bin/java"; else java="$(command -v java || true)"; fi
+if [ -z "$java" ]; then
+  echo "be-parser: Java 21 or newer is required (set JAVA_HOME or put java on PATH)" >&2
+  exit 1
+fi
+heap="${BE_PARSER_HEAP:-}"
+if [ -z "$heap" ]; then
+  # java.heap of the user defaults (be-parser config set java.heap 6g)
+  cfg="${BE_PARSER_HOME:-$HOME/.be-parser}/config.properties"
+  [ -f "$cfg" ] && heap="$(sed -n 's/^java\.heap[[:space:]]*=[[:space:]]*//p' "$cfg" | tail -1 | tr -d '[:space:]')"
+fi
+exec "$java" -Xmx"${heap:-3g}" ${BE_PARSER_JAVA_OPTS:-} -jar "$jar" "$@"

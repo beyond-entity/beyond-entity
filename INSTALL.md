@@ -2,6 +2,12 @@
 
 This guide covers the Beyond Entity desktop app, its local MCP server, and the architecture-memory skill, for use with **Claude Code** (via the plugin marketplace) or **Codex**. Steps 1–2 are shared; then follow the section for your tool.
 
+## Install Spring Code Parser
+
+To extract architecture, data lineage, and security pre-check findings from existing Java/Spring Boot or eGovFrame code, follow the [Spring Code Parser installation guide](spring_code_parser/INSTALL.md).
+
+The [`spring_code_parser/`](spring_code_parser/) folder contains a ready-to-run package requiring **Java 21 or newer**. Offline analysis works independently; the Beyond Entity desktop MCP server is needed when sending results to a BE project.
+
 ## 1. Install the desktop app
 
 Use the [official Beyond Entity download page](https://beyondentity.com/en/download) and select your operating system.

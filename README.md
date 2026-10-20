@@ -10,6 +10,13 @@ Use Beyond Entity for **software architecture modeling**, **architecture diagram
 
 [Download Beyond Entity](https://beyondentity.com/en/download) · [Installation guide](INSTALL.md) · [User guide](docs/USER_GUIDE.md) ([한국어](docs/USER_GUIDE_ko.md) · [日本語](docs/USER_GUIDE_ja.md)) · [Sample projects](samples/README.md) · [Website](https://beyondentity.com) · [GitHub](https://github.com/beyond-entity/beyond-entity)
 
+## Recent upgrades
+
+- **Security vulnerability checks:** review security pre-check findings with severity, status, source locations, evidence paths, and related architecture objects.
+- **Spring Code Parser:** the [`spring_code_parser/`](spring_code_parser/) folder now includes code that parses Spring-family source code and extracts its architecture. Extract architecture and data lineage from existing Java/Spring Boot and eGovFrame code, including Controller, Service, and Data Access layers. See the [parser guide](spring_code_parser/README.md) and [framework samples](samples/spring-framework/README.md).
+- **Changes in each Checkpoint:** open a checkpoint's changed objects to inspect additions, updates, and deletions within its interval. Added and updated objects show their final values; deleted objects show their values immediately before deletion.
+- **Requirements interviews and project budget analysis through MCP:** connect Claude Code or Codex to Beyond Entity through MCP to collect and refine project requirements through an interview, then analyze the project budget based on the collected requirements and agreed assumptions.
+
 [![Table Q web, API, and database attribute lineage](assets/screenshots/table-q-workflow.png)](https://canvas.beyondentity.com/viewsample?sample_project_file_id=rXxLCaaJ1nEVN9CKbneL)
 
 *Trace a workflow from web interactions through API transformations to database attributes. Click the image to explore Table Q in the viewer.*
@@ -100,6 +107,12 @@ The desktop app supplies the MCP executable. This repository supplies its plugin
 The guides include `.bemdl` download links. Table Q includes the [Codex-generated implementation](samples/table-q/src/) and its companion database schema. See the [Table Q setup notes](samples/table-q/README.md) before running it.
 
 [More samples →](https://beyondentity.com/en/sample-projects)
+
+### Spring Boot and eGovFrame framework layers
+
+Beyond Entity now represents **Controller Layer**, **Service Layer**, and **Data Access Layer** responsibilities alongside application modules, data stores, and attribute-level lineage. Explore **spring-petclinic**, **egovframe-msa-edu**, **egovframe-ai-rag**, and **payment-platform** in the [framework sample guide](samples/spring-framework/README.md), with screenshots of layered architecture, checkpoints, and security pre-check findings. The AI/RAG and payment samples include AI review and false-positive corrections recorded in checkpoints.
+
+[View the samples online or download their models](https://beyondentity.com/en/sample-projects).
 
 ## Repository layout
 
