@@ -21,6 +21,23 @@ Use Beyond Entity for **software architecture modeling**, **architecture diagram
 
 *Explore architecture extracted from Spring code: Petclinic controllers and repositories connected to database entities and attributes. Click the image for the Spring Boot and eGovFrame sample guide.*
 
+<table>
+  <tr>
+    <th>Security vulnerability checks</th>
+    <th>Changes by checkpoint</th>
+  </tr>
+  <tr>
+    <td width="50%"><a href="assets/screenshots/security-findings.png"><img src="assets/screenshots/security-findings.png" width="440" alt="Security finding details with severity, source location, related processor, and CWE mappings"></a></td>
+    <td width="50%"><a href="assets/screenshots/checkpoint-changes.png"><img src="assets/screenshots/checkpoint-changes.png" width="440" alt="Checkpoint changed objects with an expanded entity showing its recorded values"></a></td>
+  </tr>
+  <tr>
+    <td>Inspect security pre-check findings with severity, evidence, source locations, and related objects.</td>
+    <td>Review additions, updates, and deletions in each checkpoint interval, then expand an object to inspect its recorded values.</td>
+  </tr>
+</table>
+
+*Click either screenshot to view it at full size. Security findings are pre-check results for review.*
+
 ## Start from a design or from existing code
 
 You can build architecture memory from either direction:
